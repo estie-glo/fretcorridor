@@ -1,0 +1,23 @@
+# Spring Boot
+backend/target/
+backend/.mvn/
+*.class
+
+# Flutter
+mobile/.dart_tool/
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+
+# Angular
+web/node_modules/
+web/dist/
+web/.angular/
+
+# Docker
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.iml

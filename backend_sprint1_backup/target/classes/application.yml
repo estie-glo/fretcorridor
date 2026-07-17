@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: fretcorridor-backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/fretcorridor
+    username: fretcorridor
+    password: fretcorridor123
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+server:
+  address: 0.0.0.0
+  port: 8080
+
+# JWT Configuration
+jwt:
+  secret: fretcorridor-secret-key-flysoft-engineering-2026-cemac-corridor
+  expiration: 86400000       # 24h en millisecondes
+  refresh-expiration: 2592000000  # 30j en millisecondes
+
+logging:
+  level:
+    com.flysoft: DEBUG
+    org.springframework.security: DEBUG
