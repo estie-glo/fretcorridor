@@ -1,0 +1,63 @@
+.shell {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--fc-bg);
+}
+
+.shell__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--fc-border);
+  background: var(--fc-surface);
+}
+
+.shell__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.shell__app-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--fc-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.shell__tenant {
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.shell__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.shell__logout {
+  border: 1px solid var(--fc-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fc-text);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+}
+
+.shell__logout:hover {
+  background: color-mix(in srgb, var(--fc-danger) 8%, transparent);
+  border-color: color-mix(in srgb, var(--fc-danger) 35%, transparent);
+  color: var(--fc-danger);
+}
+
+.shell__main {
+  padding: 1.5rem;
+}

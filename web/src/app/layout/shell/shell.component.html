@@ -1,0 +1,23 @@
+<div class="shell">
+  <header class="shell__header">
+    <div class="shell__brand">
+      <span class="shell__app-name">{{ 'APP.TITLE' | translate }}</span>
+      @if (tenantName()) {
+        <span class="shell__tenant">{{ tenantName() }}</span>
+      }
+    </div>
+
+    <div class="shell__actions">
+      <app-language-switcher />
+      <button type="button" class="shell__logout" (click)="logout()">
+        {{ 'AUTH.LOGOUT' | translate }}
+      </button>
+    </div>
+  </header>
+
+  <app-shell-nav />
+
+  <main class="shell__main">
+    <router-outlet />
+  </main>
+</div>

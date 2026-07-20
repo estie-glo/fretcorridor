@@ -1,0 +1,86 @@
+{
+  "APP": {
+    "TITLE": "FretCorridor",
+    "TAGLINE": "Portail logistique corridor"
+  },
+  "AUTH": {
+    "PHONE": "Téléphone",
+    "PHONE_PLACEHOLDER": "+237 6XX XXX XXX",
+    "PIN": "Code PIN",
+    "PIN_PLACEHOLDER": "••••",
+    "LOGIN": "Se connecter",
+    "LOGOUT": "Se déconnecter",
+    "LOADING": "Connexion en cours…",
+    "ERROR_INVALID": "Identifiants incorrects. Vérifiez votre téléphone et votre PIN.",
+    "ERROR_GENERIC": "Connexion impossible. Réessayez plus tard."
+  },
+  "HOME": {
+    "WELCOME": "Bienvenue",
+    "PLACEHOLDER": "Tableau de bord à venir."
+  },
+  "AXES": {
+    "TITLE": "Axes corridor",
+    "SUBTITLE": "Supervision des axes logistiques du tenant.",
+    "LOADING_LIST": "Chargement des axes…",
+    "LOADING_STATUT": "Chargement du statut…",
+    "ERROR_LIST": "Impossible de charger la liste des axes.",
+    "ERROR_STATUT": "Impossible de charger le statut de cet axe.",
+    "EMPTY": "Aucun axe disponible pour le moment.",
+    "EMPTY_STATUT": "Aucune donnée de statut pour cet axe.",
+    "SELECT_AXE": "Sélectionnez un axe pour afficher son statut.",
+    "STATUT_TITLE": "Statut de l'axe"
+  },
+  "CHARGEUR": {
+    "TITLE": "Visibilité distribution",
+    "SUBTITLE": "Suivez l'état des axes affectés à votre distribution.",
+    "LOADING_LIST": "Chargement de la distribution…",
+    "LOADING_STATUT": "Chargement du statut…",
+    "ERROR_LIST": "Impossible de charger la vue distribution.",
+    "ERROR_STATUT": "Impossible de charger le statut de cet axe.",
+    "EMPTY": "Aucun axe de distribution disponible.",
+    "EMPTY_STATUT": "Aucune donnée de statut pour cet axe.",
+    "SELECT_AXE": "Sélectionnez un axe pour consulter son statut.",
+    "STATUT_TITLE": "Statut distribution"
+  },
+  "NAV": {
+    "LABEL": "Navigation principale",
+    "BUREAU_AXES": "Axes corridor",
+    "CHARGEUR_DISTRIBUTION": "Distribution"
+  },
+  "ADMIN": {
+    "TITLE": "Administration",
+    "SUBTITLE": "Back-office FretCorridor — validation et référentiels.",
+    "NAV_LABEL": "Navigation administration",
+    "KYC_NAV": "KYC en attente",
+    "CHAUFFEURS_NAV": "Chauffeurs"
+  },
+  "KYC": {
+    "TITLE": "Dossiers KYC en attente",
+    "SUBTITLE": "Vérifiez et validez les dossiers soumis.",
+    "LOADING": "Chargement des dossiers…",
+    "ERROR_LIST": "Impossible de charger les dossiers KYC.",
+    "EMPTY": "Aucun dossier KYC en attente.",
+    "SELECT": "Sélectionnez un dossier pour afficher le détail.",
+    "DETAIL_TITLE": "Détail du dossier",
+    "VALIDATE": "Valider le dossier",
+    "VALIDATING": "Validation en cours…",
+    "VALIDATE_SUCCESS": "Dossier validé avec succès.",
+    "VALIDATE_ERROR": "Impossible de valider ce dossier."
+  },
+  "CHAUFFEURS": {
+    "TITLE": "Chauffeurs",
+    "SUBTITLE": "Référentiel chauffeurs raccordés au corridor.",
+    "LOADING_LIST": "Chargement des chauffeurs…",
+    "LOADING_DETAIL": "Chargement du détail…",
+    "ERROR_LIST": "Impossible de charger la liste des chauffeurs.",
+    "ERROR_DETAIL": "Impossible de charger le détail de ce chauffeur.",
+    "EMPTY": "Aucun chauffeur disponible.",
+    "EMPTY_DETAIL": "Aucune donnée détaillée pour ce chauffeur.",
+    "SELECT": "Sélectionnez un chauffeur pour afficher le détail.",
+    "DETAIL_TITLE": "Fiche chauffeur"
+  },
+  "LANG": {
+    "FR": "Français",
+    "EN": "English"
+  }
+}

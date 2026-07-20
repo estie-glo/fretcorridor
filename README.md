@@ -1,193 +1,79 @@
-# FretCorridor — Sprint 1 : Authentification
-## Flysoft Engineering SAS — Juillet 2026
+# FretCorridor
 
----
+Monorepo de la plateforme logistique **FretCorridor** — supervision multi-tenant des corridors fret (contexte Afrique / Cameroun).
 
-## Structure du projet
+**Flysoft Engineering SAS** — 2026
+
+## Structure du monorepo
 
 ```
 fretcorridor/
-├── docker-compose.yml          ← Lance PostgreSQL + Redis
-├── backend/                    ← Spring Boot (Java 17)
-│   ├── pom.xml
-│   └── src/main/java/com/flysoft/fretcorridor/
-│       ├── FretCorridorApplication.java
-│       ├── config/SecurityConfig.java
-│       ├── controller/AuthController.java
-│       ├── dto/AuthDto.java
-│       ├── entity/Utilisateur.java
-│       ├── repository/UtilisateurRepository.java
-│       ├── security/JwtService.java
-│       └── service/AuthService.java
-└── flutter/                    ← App mobile Flutter
-    ├── pubspec.yaml
-    └── lib/
-        ├── main.dart
-        ├── models/utilisateur_model.dart
-        ├── providers/auth_provider.dart
-        ├── screens/login_screen.dart
-        └── services/auth_service.dart
+├── docs/                 # Documentation transverse (architecture, API, ADR…)
+├── backend/              # API REST Spring Boot (Java 17)
+├── mobile/               # Application Flutter (chauffeurs & agents)
+├── web/                  # Portail Angular 22 (bureau, chargeur, admin)
+├── docker-compose.yml    # PostgreSQL + Redis (dev local)
+└── README.md             # Ce fichier
 ```
 
----
+## Démarrage rapide (environnement complet)
 
-## ÉTAPE 1 — Installer Docker (si pas encore fait)
+### 1. Infrastructure
 
 ```bash
-sudo apt install docker.io docker-compose -y
-sudo usermod -aG docker $USER
-# Redémarrer le terminal après cette commande
+docker compose up -d
+docker ps   # fretcorridor-postgres, fretcorridor-redis
 ```
 
----
-
-## ÉTAPE 2 — Démarrer PostgreSQL + Redis
+### 2. Backend
 
 ```bash
-cd fretcorridor
-docker-compose up -d
-
-# Vérifier que les conteneurs tournent
-docker ps
-# Tu dois voir : fretcorridor-postgres et fretcorridor-redis
+cd backend && mvn spring-boot:run
+# → http://localhost:8080/api
 ```
 
----
-
-## ÉTAPE 3 — Lancer le back-end Spring Boot
+### 3. Web
 
 ```bash
-cd fretcorridor/backend
-
-# Compiler et lancer
-mvn spring-boot:run
-
-# Tu dois voir dans les logs :
-# Started FretCorridorApplication in X.XXX seconds
-# Tomcat started on port(s): 8080
+cd web && npm install && npm start
+# → http://localhost:4200
 ```
 
----
-
-## ÉTAPE 4 — Tester l'API avec curl
-
-### Créer un utilisateur test en base (une seule fois)
-```bash
-# Se connecter à PostgreSQL
-docker exec -it fretcorridor-postgres psql -U fretcorridor -d fretcorridor
-
-# Insérer un chauffeur test (PIN : 1234 hashé avec BCrypt)
-INSERT INTO utilisateurs (id, telephone, code_pin, role, tenant_id, actif, tentatives_echouees)
-VALUES (
-  gen_random_uuid(),
-  '+237699000001',
-  '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EL7YhMlMd1bGHVxRkWMc5u',
-  'CHAUFFEUR',
-  'BGFT_CM',
-  true,
-  0
-);
-# (le hash correspond au PIN : 1234)
-\q
-```
-
-### Tester le login
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"telephone":"+237699000001","codePin":"1234"}'
-```
-
-### Réponse attendue :
-```json
-{
-  "accessToken": "eyJhbGci...",
-  "refreshToken": "eyJhbGci...",
-  "role": "CHAUFFEUR",
-  "tenantId": "BGFT_CM",
-  "configTenant": {
-    "tenantId": "BGFT_CM",
-    "nomBureau": "BGFT Cameroun",
-    "langue": "fr",
-    "devise": "FCFA",
-    "axesDisponibles": ["Douala-NDjamena", "Epine-Nord", "Douala-Yaounde"]
-  }
-}
-```
-
-### Tester le refresh
-```bash
-curl -X POST http://localhost:8080/api/auth/refresh \
-  -H "Content-Type: application/json" \
-  -d '{"refreshToken":"TON_REFRESH_TOKEN_ICI"}'
-```
-
-### Tester le logout
-```bash
-curl -X POST http://localhost:8080/api/auth/logout \
-  -H "Authorization: Bearer TON_ACCESS_TOKEN_ICI"
-```
-
----
-
-## ÉTAPE 5 — Lancer l'app Flutter
+### 4. Mobile
 
 ```bash
-cd fretcorridor/flutter
-
-# Installer les dépendances
-flutter pub get
-
-# Vérifier l'environnement Flutter
-flutter doctor
-
-# Lancer sur émulateur Android
-# (d'abord ouvrir Android Studio et démarrer un émulateur)
-flutter run
-
-# OU lancer sur Chrome pour tester rapidement
-flutter run -d chrome
+cd mobile && flutter pub get && flutter run
 ```
 
----
+## Modules
 
-## ENDPOINTS Sprint 1
+| Module | Stack | README |
+|--------|-------|--------|
+| [backend](./backend/) | Spring Boot, PostgreSQL, Redis, JWT | [backend/README.md](./backend/README.md) |
+| [mobile](./mobile/) | Flutter, Riverpod, Dio | [mobile/README.md](./mobile/README.md) |
+| [web](./web/) | Angular 22, PWA, i18n | [web/README.md](./web/README.md) |
+| [docs](./docs/) | Markdown, Mermaid | [docs/README.md](./docs/README.md) |
 
-| Méthode | URL | Description | Auth |
-|---------|-----|-------------|------|
-| POST | /api/auth/login | Connexion | ❌ Public |
-| POST | /api/auth/refresh | Renouveler token | ❌ Public |
-| POST | /api/auth/logout | Déconnexion | ✅ JWT |
-| PUT | /api/auth/fcm-token | MAJ token FCM | ✅ JWT |
+## Auth & multi-tenant
 
----
+- Connexion par **téléphone + code PIN**
+- JWT (access + refresh via Redis)
+- Configuration tenant renvoyée au login (langue, devise, axes disponibles)
+- Rôles : `CHAUFFEUR`, `AGENT`, `CHARGEUR`, `ADMIN`…
 
-## Ce qui est implémenté (Sprint 1)
+## Ports locaux
 
-### Back-end Spring Boot ✅
-- [x] Entité Utilisateur avec rôles et tenantId
-- [x] Login avec BCrypt + tentatives limitées (3 max)
-- [x] Génération JWT (24h) + RefreshToken (30j)
-- [x] Stockage RefreshToken dans Redis
-- [x] Rotation du RefreshToken au refresh
-- [x] Config tenant renvoyée au mobile (axes, langue, devise)
-- [x] Mise à jour FCM token
-- [x] Logout propre (suppression Redis + FCM)
+| Service | Port |
+|---------|------|
+| API Spring Boot | 8080 |
+| Angular dev server | 4200 |
+| PostgreSQL | 5433 |
+| Redis | 6379 |
 
-### Flutter Mobile ✅
-- [x] Écran de connexion (téléphone + PIN)
-- [x] Sélection rôle (Chauffeur / Agent)
-- [x] Validation formulaire
-- [x] Stockage JWT dans SecureStorage
-- [x] Intercepteur Dio (refresh automatique si 401)
-- [x] AuthProvider Riverpod (state management)
-- [x] Redirection automatique selon le rôle
-- [x] Gestion des erreurs (PIN incorrect, compte bloqué...)
+## Documentation
 
----
+Voir le dossier [`docs/`](./docs/) pour l'architecture, les spécifications API et le contexte technique du portail web ([`docs/CONTEXT.md`](./docs/CONTEXT.md)).
 
-## Sprint 2 — ce qui vient ensuite
-- Dashboard chauffeur (missions, statut réseau)
-- Dashboard agent (liste chauffeurs, KYC)
-- Service GPS arrière-plan
-- Module offline-first (SQLite)
+## Licence
+
+Propriétaire — Flysoft Engineering SAS.

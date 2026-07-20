@@ -3,13 +3,14 @@ backend/target/
 backend/.mvn/
 *.class
 
-# Flutter
+# Flutter / Mobile
 mobile/.dart_tool/
 mobile/build/
 mobile/.flutter-plugins
 mobile/.flutter-plugins-dependencies
+mobile/android/build/
 
-# Angular
+# Angular / Web
 web/node_modules/
 web/dist/
 web/.angular/

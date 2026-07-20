@@ -1,0 +1,101 @@
+.login-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--fc-primary) 12%, transparent), transparent 40%),
+    var(--fc-bg);
+}
+
+.login-page__toolbar {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+}
+
+.login-card {
+  width: min(100%, 26rem);
+  padding: 2rem;
+  border: 1px solid var(--fc-border);
+  border-radius: 1rem;
+  background: var(--fc-surface);
+  box-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--fc-text) 8%, transparent);
+}
+
+.login-card__header {
+  margin-bottom: 1.75rem;
+}
+
+.login-card__eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--fc-muted);
+  font-size: 0.875rem;
+}
+
+.login-card__title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.login-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.field__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.field__input {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--fc-border);
+  border-radius: 0.65rem;
+  background: var(--fc-bg);
+  color: var(--fc-text);
+  font: inherit;
+}
+
+.field__input:focus {
+  outline: 2px solid color-mix(in srgb, var(--fc-primary) 35%, transparent);
+  border-color: var(--fc-primary);
+}
+
+.field__error,
+.login-form__error {
+  margin: 0;
+  color: var(--fc-danger);
+  font-size: 0.8125rem;
+}
+
+.login-form__submit {
+  margin-top: 0.5rem;
+  width: 100%;
+  border: 0;
+  border-radius: 0.65rem;
+  padding: 0.85rem 1rem;
+  background: var(--fc-primary);
+  color: var(--fc-primary-contrast);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.login-form__submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.login-form__submit:not(:disabled):hover {
+  opacity: 0.92;
+}

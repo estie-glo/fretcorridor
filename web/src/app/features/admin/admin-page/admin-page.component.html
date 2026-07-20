@@ -1,0 +1,25 @@
+<section class="admin-page">
+  <header class="admin-page__header">
+    <h1 class="admin-page__title">{{ 'ADMIN.TITLE' | translate }}</h1>
+    <p class="admin-page__subtitle">{{ 'ADMIN.SUBTITLE' | translate }}</p>
+  </header>
+
+  <nav class="admin-nav" [attr.aria-label]="'ADMIN.NAV_LABEL' | translate">
+    <a
+      routerLink="kyc"
+      routerLinkActive="admin-nav__link--active"
+      class="admin-nav__link"
+    >
+      {{ 'ADMIN.KYC_NAV' | translate }}
+    </a>
+    <a
+      routerLink="chauffeurs"
+      routerLinkActive="admin-nav__link--active"
+      class="admin-nav__link"
+    >
+      {{ 'ADMIN.CHAUFFEURS_NAV' | translate }}
+    </a>
+  </nav>
+
+  <router-outlet />
+</section>

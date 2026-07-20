@@ -1,0 +1,57 @@
+<section class="login-page">
+  <div class="login-page__toolbar">
+    <app-language-switcher />
+  </div>
+
+  <div class="login-card">
+    <header class="login-card__header">
+      <p class="login-card__eyebrow">{{ 'APP.TAGLINE' | translate }}</p>
+      <h1 class="login-card__title">{{ 'APP.TITLE' | translate }}</h1>
+    </header>
+
+    <form class="login-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="field">
+        <label class="field__label" for="telephone">{{ 'AUTH.PHONE' | translate }}</label>
+        <input
+          id="telephone"
+          class="field__input"
+          type="tel"
+          autocomplete="tel"
+          formControlName="telephone"
+          [placeholder]="'AUTH.PHONE_PLACEHOLDER' | translate"
+        />
+        @if (form.controls.telephone.touched && form.controls.telephone.invalid) {
+          <p class="field__error">{{ 'AUTH.ERROR_INVALID' | translate }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="pin">{{ 'AUTH.PIN' | translate }}</label>
+        <input
+          id="pin"
+          class="field__input"
+          type="password"
+          inputmode="numeric"
+          autocomplete="current-password"
+          formControlName="pin"
+          [placeholder]="'AUTH.PIN_PLACEHOLDER' | translate"
+        />
+        @if (form.controls.pin.touched && form.controls.pin.invalid) {
+          <p class="field__error">{{ 'AUTH.ERROR_INVALID' | translate }}</p>
+        }
+      </div>
+
+      @if (errorMessage(); as messageKey) {
+        <p class="login-form__error" role="alert">{{ messageKey | translate }}</p>
+      }
+
+      <button class="login-form__submit" type="submit" [disabled]="isSubmitting">
+        @if (isSubmitting) {
+          {{ 'AUTH.LOADING' | translate }}
+        } @else {
+          {{ 'AUTH.LOGIN' | translate }}
+        }
+      </button>
+    </form>
+  </div>
+</section>

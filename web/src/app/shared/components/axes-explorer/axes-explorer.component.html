@@ -1,0 +1,61 @@
+<section class="axes-page">
+  <header class="axes-page__header">
+    <h1 class="axes-page__title">{{ translationKey('TITLE') | translate }}</h1>
+    <p class="axes-page__subtitle">{{ translationKey('SUBTITLE') | translate }}</p>
+  </header>
+
+  <div class="axes-layout">
+    <div class="axes-panel">
+      @if (isLoadingList()) {
+        <p class="axes-panel__message">{{ translationKey('LOADING_LIST') | translate }}</p>
+      } @else if (listError()) {
+        <p class="axes-panel__message axes-panel__message--error" role="alert">
+          {{ translationKey('ERROR_LIST') | translate }}
+        </p>
+      } @else if (axes().length === 0) {
+        <p class="axes-panel__message">{{ translationKey('EMPTY') | translate }}</p>
+      } @else {
+        <ul class="axes-list">
+          @for (axe of axes(); track axe.id) {
+            <li>
+              <button
+                type="button"
+                class="axes-list__item"
+                [class.axes-list__item--active]="isSelected(axe.id)"
+                (click)="selectAxe(axe.id)"
+              >
+                <span class="axes-list__label">{{ getAxeLabel(axe) }}</span>
+                <span class="axes-list__id">#{{ axe.id }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="statut-panel">
+      <h2 class="statut-panel__title">{{ translationKey('STATUT_TITLE') | translate }}</h2>
+
+      @if (!selectedAxeId()) {
+        <p class="statut-panel__message">{{ translationKey('SELECT_AXE') | translate }}</p>
+      } @else if (isLoadingStatut()) {
+        <p class="statut-panel__message">{{ translationKey('LOADING_STATUT') | translate }}</p>
+      } @else if (statutError()) {
+        <p class="statut-panel__message statut-panel__message--error" role="alert">
+          {{ translationKey('ERROR_STATUT') | translate }}
+        </p>
+      } @else if (statutEntries().length === 0) {
+        <p class="statut-panel__message">{{ translationKey('EMPTY_STATUT') | translate }}</p>
+      } @else {
+        <dl class="statut-details">
+          @for (entry of statutEntries(); track entry.key) {
+            <div class="statut-details__row">
+              <dt>{{ entry.key }}</dt>
+              <dd>{{ entry.value }}</dd>
+            </div>
+          }
+        </dl>
+      }
+    </div>
+  </div>
+</section>

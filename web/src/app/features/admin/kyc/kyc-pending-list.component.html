@@ -1,0 +1,78 @@
+<section class="kyc-page">
+  @if (validateSuccess()) {
+    <p class="kyc-page__banner kyc-page__banner--success" role="status">
+      {{ 'KYC.VALIDATE_SUCCESS' | translate }}
+    </p>
+  }
+
+  <header class="kyc-page__header">
+    <h2 class="kyc-page__title">{{ 'KYC.TITLE' | translate }}</h2>
+    <p class="kyc-page__subtitle">{{ 'KYC.SUBTITLE' | translate }}</p>
+  </header>
+
+  <div class="kyc-layout">
+    <div class="kyc-panel">
+      @if (isLoading()) {
+        <p class="kyc-panel__message">{{ 'KYC.LOADING' | translate }}</p>
+      } @else if (loadError()) {
+        <p class="kyc-panel__message kyc-panel__message--error" role="alert">
+          {{ 'KYC.ERROR_LIST' | translate }}
+        </p>
+      } @else if (pendingKyc().length === 0) {
+        <p class="kyc-panel__message">{{ 'KYC.EMPTY' | translate }}</p>
+      } @else {
+        <ul class="kyc-list">
+          @for (kyc of pendingKyc(); track kyc.id) {
+            <li>
+              <button
+                type="button"
+                class="kyc-list__item"
+                [class.kyc-list__item--active]="isSelected(kyc.id)"
+                (click)="selectKyc(kyc.id)"
+              >
+                <span class="kyc-list__label">{{ getKycLabel(kyc) }}</span>
+                <span class="kyc-list__id">#{{ kyc.id }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="kyc-detail">
+      <h3 class="kyc-detail__title">{{ 'KYC.DETAIL_TITLE' | translate }}</h3>
+
+      @if (!selectedKycId()) {
+        <p class="kyc-detail__message">{{ 'KYC.SELECT' | translate }}</p>
+      } @else {
+        @if (validateError()) {
+          <p class="kyc-detail__message kyc-detail__message--error" role="alert">
+            {{ 'KYC.VALIDATE_ERROR' | translate }}
+          </p>
+        }
+
+        <dl class="kyc-details">
+          @for (entry of selectedEntries(); track entry.key) {
+            <div class="kyc-details__row">
+              <dt>{{ entry.key }}</dt>
+              <dd>{{ entry.value }}</dd>
+            </div>
+          }
+        </dl>
+
+        <button
+          type="button"
+          class="kyc-detail__validate"
+          [disabled]="isValidating(selectedKycId()!)"
+          (click)="validateSelected()"
+        >
+          @if (isValidating(selectedKycId()!)) {
+            {{ 'KYC.VALIDATING' | translate }}
+          } @else {
+            {{ 'KYC.VALIDATE' | translate }}
+          }
+        </button>
+      }
+    </div>
+  </div>
+</section>

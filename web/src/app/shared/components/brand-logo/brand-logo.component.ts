@@ -1,0 +1,90 @@
+import { Component, computed, input, signal } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { BRAND_LOGO_ALT, BRAND_LOGO_CANDIDATES } from '../../brand/brand.constants';
+
+@Component({
+  selector: 'app-brand-logo',
+  imports: [TranslatePipe],
+  template: `
+    @if (logoSrc(); as src) {
+      <img
+        class="brand-logo"
+        [class.brand-logo--sm]="size() === 'sm'"
+        [class.brand-logo--md]="size() === 'md'"
+        [class.brand-logo--lg]="size() === 'lg'"
+        [src]="src"
+        [alt]="alt()"
+        (error)="onImageError()"
+      />
+    } @else {
+      <span
+        class="brand-logo__fallback"
+        [class.brand-logo__fallback--sm]="size() === 'sm'"
+        [class.brand-logo__fallback--md]="size() === 'md'"
+        [class.brand-logo__fallback--lg]="size() === 'lg'"
+      >
+        {{ 'APP.TITLE' | translate }}
+      </span>
+    }
+  `,
+  styles: `
+    .brand-logo {
+      display: block;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-logo--sm {
+      height: 1.75rem;
+    }
+
+    .brand-logo--md {
+      height: 2.25rem;
+    }
+
+    .brand-logo--lg {
+      height: 3.25rem;
+    }
+
+    .brand-logo__fallback {
+      display: inline-block;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--fc-text);
+      line-height: 1;
+    }
+
+    .brand-logo__fallback--sm {
+      font-size: 1rem;
+    }
+
+    .brand-logo__fallback--md {
+      font-size: 1.125rem;
+    }
+
+    .brand-logo__fallback--lg {
+      font-size: 1.5rem;
+    }
+  `,
+})
+export class BrandLogoComponent {
+  readonly size = input<'sm' | 'md' | 'lg'>('md');
+  readonly alt = input<string>(BRAND_LOGO_ALT);
+
+  private readonly candidateIndex = signal(0);
+
+  readonly logoSrc = computed(() => {
+    const index = this.candidateIndex();
+
+    if (index >= BRAND_LOGO_CANDIDATES.length) {
+      return null;
+    }
+
+    return BRAND_LOGO_CANDIDATES[index];
+  });
+
+  onImageError(): void {
+    this.candidateIndex.update((value) => value + 1);
+  }
+}

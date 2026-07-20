@@ -1,0 +1,86 @@
+{
+  "APP": {
+    "TITLE": "FretCorridor",
+    "TAGLINE": "Corridor freight portal"
+  },
+  "AUTH": {
+    "PHONE": "Phone",
+    "PHONE_PLACEHOLDER": "+237 6XX XXX XXX",
+    "PIN": "PIN code",
+    "PIN_PLACEHOLDER": "••••",
+    "LOGIN": "Sign in",
+    "LOGOUT": "Sign out",
+    "LOADING": "Signing in…",
+    "ERROR_INVALID": "Invalid credentials. Check your phone and PIN.",
+    "ERROR_GENERIC": "Unable to sign in. Please try again later."
+  },
+  "HOME": {
+    "WELCOME": "Welcome",
+    "PLACEHOLDER": "Dashboard coming soon."
+  },
+  "AXES": {
+    "TITLE": "Corridor axes",
+    "SUBTITLE": "Monitor your tenant logistics axes.",
+    "LOADING_LIST": "Loading axes…",
+    "LOADING_STATUT": "Loading status…",
+    "ERROR_LIST": "Unable to load the axes list.",
+    "ERROR_STATUT": "Unable to load this axis status.",
+    "EMPTY": "No axes available yet.",
+    "EMPTY_STATUT": "No status data for this axis.",
+    "SELECT_AXE": "Select an axis to view its status.",
+    "STATUT_TITLE": "Axis status"
+  },
+  "CHARGEUR": {
+    "TITLE": "Distribution visibility",
+    "SUBTITLE": "Track status of axes linked to your distribution.",
+    "LOADING_LIST": "Loading distribution view…",
+    "LOADING_STATUT": "Loading status…",
+    "ERROR_LIST": "Unable to load the distribution view.",
+    "ERROR_STATUT": "Unable to load this axis status.",
+    "EMPTY": "No distribution axes available.",
+    "EMPTY_STATUT": "No status data for this axis.",
+    "SELECT_AXE": "Select an axis to view its status.",
+    "STATUT_TITLE": "Distribution status"
+  },
+  "NAV": {
+    "LABEL": "Main navigation",
+    "BUREAU_AXES": "Corridor axes",
+    "CHARGEUR_DISTRIBUTION": "Distribution"
+  },
+  "ADMIN": {
+    "TITLE": "Administration",
+    "SUBTITLE": "FretCorridor back-office — validation and master data.",
+    "NAV_LABEL": "Admin navigation",
+    "KYC_NAV": "Pending KYC",
+    "CHAUFFEURS_NAV": "Drivers"
+  },
+  "KYC": {
+    "TITLE": "Pending KYC cases",
+    "SUBTITLE": "Review and validate submitted cases.",
+    "LOADING": "Loading cases…",
+    "ERROR_LIST": "Unable to load pending KYC cases.",
+    "EMPTY": "No pending KYC cases.",
+    "SELECT": "Select a case to view details.",
+    "DETAIL_TITLE": "Case details",
+    "VALIDATE": "Validate case",
+    "VALIDATING": "Validating…",
+    "VALIDATE_SUCCESS": "Case validated successfully.",
+    "VALIDATE_ERROR": "Unable to validate this case."
+  },
+  "CHAUFFEURS": {
+    "TITLE": "Drivers",
+    "SUBTITLE": "Corridor driver registry.",
+    "LOADING_LIST": "Loading drivers…",
+    "LOADING_DETAIL": "Loading details…",
+    "ERROR_LIST": "Unable to load the drivers list.",
+    "ERROR_DETAIL": "Unable to load this driver details.",
+    "EMPTY": "No drivers available.",
+    "EMPTY_DETAIL": "No detail data for this driver.",
+    "SELECT": "Select a driver to view details.",
+    "DETAIL_TITLE": "Driver profile"
+  },
+  "LANG": {
+    "FR": "Français",
+    "EN": "English"
+  }
+}

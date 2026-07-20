@@ -1,0 +1,61 @@
+<section class="chauffeurs-page">
+  <header class="chauffeurs-page__header">
+    <h2 class="chauffeurs-page__title">{{ 'CHAUFFEURS.TITLE' | translate }}</h2>
+    <p class="chauffeurs-page__subtitle">{{ 'CHAUFFEURS.SUBTITLE' | translate }}</p>
+  </header>
+
+  <div class="chauffeurs-layout">
+    <div class="chauffeurs-panel">
+      @if (isLoadingList()) {
+        <p class="chauffeurs-panel__message">{{ 'CHAUFFEURS.LOADING_LIST' | translate }}</p>
+      } @else if (listError()) {
+        <p class="chauffeurs-panel__message chauffeurs-panel__message--error" role="alert">
+          {{ 'CHAUFFEURS.ERROR_LIST' | translate }}
+        </p>
+      } @else if (chauffeurs().length === 0) {
+        <p class="chauffeurs-panel__message">{{ 'CHAUFFEURS.EMPTY' | translate }}</p>
+      } @else {
+        <ul class="chauffeurs-list">
+          @for (chauffeur of chauffeurs(); track chauffeur.id) {
+            <li>
+              <button
+                type="button"
+                class="chauffeurs-list__item"
+                [class.chauffeurs-list__item--active]="isSelected(chauffeur.id)"
+                (click)="selectChauffeur(chauffeur.id)"
+              >
+                <span class="chauffeurs-list__label">{{ getChauffeurLabel(chauffeur) }}</span>
+                <span class="chauffeurs-list__id">#{{ chauffeur.id }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <div class="chauffeur-detail">
+      <h3 class="chauffeur-detail__title">{{ 'CHAUFFEURS.DETAIL_TITLE' | translate }}</h3>
+
+      @if (!selectedChauffeurId()) {
+        <p class="chauffeur-detail__message">{{ 'CHAUFFEURS.SELECT' | translate }}</p>
+      } @else if (isLoadingDetail()) {
+        <p class="chauffeur-detail__message">{{ 'CHAUFFEURS.LOADING_DETAIL' | translate }}</p>
+      } @else if (detailError()) {
+        <p class="chauffeur-detail__message chauffeur-detail__message--error" role="alert">
+          {{ 'CHAUFFEURS.ERROR_DETAIL' | translate }}
+        </p>
+      } @else if (detailEntries().length === 0) {
+        <p class="chauffeur-detail__message">{{ 'CHAUFFEURS.EMPTY_DETAIL' | translate }}</p>
+      } @else {
+        <dl class="chauffeur-details">
+          @for (entry of detailEntries(); track entry.key) {
+            <div class="chauffeur-details__row">
+              <dt>{{ entry.key }}</dt>
+              <dd>{{ entry.value }}</dd>
+            </div>
+          }
+        </dl>
+      }
+    </div>
+  </div>
+</section>
