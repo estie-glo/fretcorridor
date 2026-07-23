@@ -9,37 +9,38 @@ Monorepo de la plateforme logistique **FretCorridor** — supervision multi-tena
 ```
 fretcorridor/
 ├── docs/                 # Documentation transverse (architecture, API, ADR…)
-├── backend/              # API REST Spring Boot (Java 17)
+├── backend/              # API REST Spring Boot (Java 17) — une app, packages web/mobile/shared
+│   └── …/api/{shared,web,mobile} + common/
 ├── mobile/               # Application Flutter (chauffeurs & agents)
 ├── web/                  # Portail Angular 22 (bureau, chargeur, admin)
-├── docker-compose.yml    # PostgreSQL + Redis (dev local)
+├── docker-compose.yml    # Stack complète (postgres, redis, minio, backend, web)
 └── README.md             # Ce fichier
 ```
 
-## Démarrage rapide (environnement complet)
+> Convention backend : nouveaux endpoints web → `backend/.../api/web/`, mobile → `api/mobile/`, communs → `api/shared/`. Détail : [`docs/backend-structure.md`](./docs/backend-structure.md).
 
-### 1. Infrastructure
+## Démarrage rapide
 
-```bash
-docker compose up -d
-docker ps   # fretcorridor-postgres, fretcorridor-redis
-```
-
-### 2. Backend
+### Option A — tout en Docker (recommandé)
 
 ```bash
-cd backend && mvn spring-boot:run
-# → http://localhost:8080/api
+docker compose up --build
+# → Web http://localhost:4200
+# → API http://localhost:8080
+# → MinIO console http://localhost:9001 (fretcorridor / fretcorridor123)
 ```
 
-### 3. Web
+Premier build : compter 5–10 min (Maven + npm). Les comptes démo sont accessibles via les boutons sur l'écran de login.
+
+### Option B — dev local (hot reload)
 
 ```bash
-cd web && npm install && npm start
-# → http://localhost:4200
+docker compose up -d postgres redis minio
+cd backend && mvn spring-boot:run    # :8080
+cd web && nvm use 22 && npm start     # :4200
 ```
 
-### 4. Mobile
+### Mobile
 
 ```bash
 cd mobile && flutter pub get && flutter run
@@ -65,14 +66,22 @@ cd mobile && flutter pub get && flutter run
 
 | Service | Port |
 |---------|------|
+| Web (Docker ou ng serve) | 4200 |
 | API Spring Boot | 8080 |
-| Angular dev server | 4200 |
 | PostgreSQL | 5433 |
 | Redis | 6379 |
+| MinIO API / console | 9000 / 9001 |
 
 ## Documentation
 
-Voir le dossier [`docs/`](./docs/) pour l'architecture, les spécifications API et le contexte technique du portail web ([`docs/CONTEXT.md`](./docs/CONTEXT.md)).
+| Doc | Rôle |
+|-----|------|
+| [`docs/ROADMAP.md`](./docs/ROADMAP.md) | **Roadmap sprints** (source de vérité — à suivre à la lettre) |
+| [`docs/CONTEXT.md`](./docs/CONTEXT.md) | Contexte technique monorepo (agents / IDE) |
+| [`docs/backend-structure.md`](./docs/backend-structure.md) | Packages API `web` / `mobile` / `shared` |
+| [`docs/README.md`](./docs/README.md) | Index documentation |
+
+Sprint courant : voir l’en-tête de `ROADMAP.md` (aujourd’hui **S5 web OK — S6 suivant** ; mobile S5 différé).
 
 ## Licence
 

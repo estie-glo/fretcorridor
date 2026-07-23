@@ -16,7 +16,7 @@ export class ChauffeursService {
 
   getChauffeurs(): Observable<ChauffeurSummary[]> {
     return this.http
-      .get<unknown>(`${environment.apiUrl}/chauffeurs`)
+      .get<unknown>(`${environment.apiUrl}/admin/chauffeurs`)
       .pipe(map((response) => parseChauffeursResponse(response)));
   }
 

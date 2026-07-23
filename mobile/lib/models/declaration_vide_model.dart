@@ -8,6 +8,7 @@ class DeclarationVideModel {
   final double capaciteTonnes;
   final DateTime dateCreation;
   final bool synchronise;
+  final String? missionId;
 
   const DeclarationVideModel({
     required this.idLocal,
@@ -19,6 +20,7 @@ class DeclarationVideModel {
     required this.capaciteTonnes,
     required this.dateCreation,
     this.synchronise = false,
+    this.missionId,
   });
 
   Map<String, dynamic> toMap() {
@@ -32,6 +34,7 @@ class DeclarationVideModel {
       'capacite_tonnes': capaciteTonnes,
       'date_creation': dateCreation.toIso8601String(),
       'synchronise': synchronise ? 1 : 0,
+      'mission_id': missionId,
     };
   }
 
@@ -46,16 +49,18 @@ class DeclarationVideModel {
       capaciteTonnes: map['capacite_tonnes'],
       dateCreation: DateTime.parse(map['date_creation']),
       synchronise: map['synchronise'] == 1,
+      missionId: map['mission_id'] as String?,
     );
   }
 
-  DeclarationVideModel copierAvec({bool? synchronise}) {
+  DeclarationVideModel copierAvec({bool? synchronise, String? missionId}) {
     return DeclarationVideModel(
       idLocal: idLocal, axeId: axeId, axeNom: axeNom,
       latitude: latitude, longitude: longitude,
       typeCamion: typeCamion, capaciteTonnes: capaciteTonnes,
       dateCreation: dateCreation,
       synchronise: synchronise ?? this.synchronise,
+      missionId: missionId ?? this.missionId,
     );
   }
 }

@@ -4,7 +4,7 @@ export enum UserRole {
   Admin = 'ADMIN',
 }
 
-const ADMIN_ROLE_PATTERNS = ['ADMIN', 'BACK_OFFICE', 'BACKOFFICE'];
+const ADMIN_ROLE_PATTERNS = ['ADMIN', 'BACK_OFFICE', 'BACKOFFICE', 'OPERATEUR', 'OPERATOR'];
 const CHARGEUR_ROLE_PATTERNS = ['CHARGEUR', 'SHIPPER', 'CLIENT'];
 
 export function normalizeRole(role: string | null | undefined): UserRole {

@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../core/config/api_config.dart';
 
-const String baseUrl = 'http://192.168.1.53:8080/api';
+const String baseUrl = ApiConfig.baseUrl;
 
 const String keyAccessToken = 'access_token';
 const String keyRefreshToken = 'refresh_token';

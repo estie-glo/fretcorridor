@@ -1,61 +1,81 @@
-<section class="axes-page">
-  <header class="axes-page__header">
-    <h1 class="axes-page__title">{{ translationKey('TITLE') | translate }}</h1>
-    <p class="axes-page__subtitle">{{ translationKey('SUBTITLE') | translate }}</p>
+<section class="fc-page">
+  <header class="fc-page__header">
+    <div>
+      <h1 class="fc-page__title">{{ translationKey('TITLE') | translate }}</h1>
+      <p class="fc-page__subtitle">{{ translationKey('SUBTITLE') | translate }}</p>
+    </div>
+    @if (!isLoadingList() && !listError()) {
+      <span class="fc-page__count">{{ axes().length }}</span>
+    }
   </header>
 
-  <div class="axes-layout">
-    <div class="axes-panel">
+  <app-corridor-map
+    [hubs]="hubs()"
+    [axes]="axes()"
+    [selectedAxeId]="selectedAxeId()"
+    [isLoading]="isLoadingMap()"
+    [hasError]="mapError()"
+    (axeSelect)="selectAxe($event)"
+  />
+
+  <div class="fc-split">
+    <aside class="fc-panel" aria-label="Liste">
       @if (isLoadingList()) {
-        <p class="axes-panel__message">{{ translationKey('LOADING_LIST') | translate }}</p>
+        <div class="fc-skeleton" aria-busy="true" aria-live="polite">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
       } @else if (listError()) {
-        <p class="axes-panel__message axes-panel__message--error" role="alert">
-          {{ translationKey('ERROR_LIST') | translate }}
-        </p>
+        <p class="fc-msg fc-msg--error" role="alert">{{ translationKey('ERROR_LIST') | translate }}</p>
       } @else if (axes().length === 0) {
-        <p class="axes-panel__message">{{ translationKey('EMPTY') | translate }}</p>
+        <div class="fc-empty">{{ translationKey('EMPTY') | translate }}</div>
       } @else {
-        <ul class="axes-list">
+        <ul class="fc-list">
           @for (axe of axes(); track axe.id) {
             <li>
               <button
                 type="button"
-                class="axes-list__item"
-                [class.axes-list__item--active]="isSelected(axe.id)"
+                class="fc-list__item"
+                [class.fc-list__item--active]="isSelected(axe.id)"
                 (click)="selectAxe(axe.id)"
               >
-                <span class="axes-list__label">{{ getAxeLabel(axe) }}</span>
-                <span class="axes-list__id">#{{ axe.id }}</span>
+                <span class="fc-list__label">{{ getAxeLabel(axe) }}</span>
+                @if (getAxeMeta(axe); as meta) {
+                  <span class="fc-list__meta">{{ meta }}</span>
+                }
               </button>
             </li>
           }
         </ul>
       }
-    </div>
+    </aside>
 
-    <div class="statut-panel">
-      <h2 class="statut-panel__title">{{ translationKey('STATUT_TITLE') | translate }}</h2>
+    <section class="fc-panel">
+      <h2 class="fc-panel__title">{{ translationKey('STATUT_TITLE') | translate }}</h2>
 
       @if (!selectedAxeId()) {
-        <p class="statut-panel__message">{{ translationKey('SELECT_AXE') | translate }}</p>
+        <div class="fc-empty">{{ translationKey('SELECT_AXE') | translate }}</div>
       } @else if (isLoadingStatut()) {
-        <p class="statut-panel__message">{{ translationKey('LOADING_STATUT') | translate }}</p>
+        <div class="fc-skeleton" aria-busy="true">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
       } @else if (statutError()) {
-        <p class="statut-panel__message statut-panel__message--error" role="alert">
-          {{ translationKey('ERROR_STATUT') | translate }}
-        </p>
+        <p class="fc-msg fc-msg--error" role="alert">{{ translationKey('ERROR_STATUT') | translate }}</p>
       } @else if (statutEntries().length === 0) {
-        <p class="statut-panel__message">{{ translationKey('EMPTY_STATUT') | translate }}</p>
+        <div class="fc-empty">{{ translationKey('EMPTY_STATUT') | translate }}</div>
       } @else {
-        <dl class="statut-details">
+        <dl class="fc-dl">
           @for (entry of statutEntries(); track entry.key) {
-            <div class="statut-details__row">
+            <div class="fc-dl__row">
               <dt>{{ entry.key }}</dt>
               <dd>{{ entry.value }}</dd>
             </div>
           }
         </dl>
       }
-    </div>
+    </section>
   </div>
 </section>

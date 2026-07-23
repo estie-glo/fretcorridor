@@ -1,0 +1,32 @@
+<section class="tracking-map" [attr.aria-label]="'MISSIONS.MAP_TITLE' | translate">
+  <header class="tracking-map__header">
+    <h2 class="fc-panel__title">{{ 'MISSIONS.MAP_TITLE' | translate }}</h2>
+    @if (lastUpdatedAt(); as updated) {
+      <p class="tracking-map__updated">
+        {{ 'MISSIONS.MAP_UPDATED' | translate }} · {{ updated | date: 'HH:mm:ss' }}
+      </p>
+    }
+  </header>
+
+  <div class="tracking-map__frame">
+    @if (isLoading()) {
+      <div class="tracking-map__overlay" aria-busy="true">
+        <div class="fc-skeleton">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
+        <p>{{ 'MISSIONS.MAP_LOADING' | translate }}</p>
+      </div>
+    } @else if (hasError()) {
+      <div class="tracking-map__overlay" role="alert">
+        <p class="fc-msg fc-msg--error">{{ 'MISSIONS.MAP_ERROR' | translate }}</p>
+      </div>
+    } @else if (mapReady() && !hasGeoData()) {
+      <div class="tracking-map__overlay tracking-map__overlay--empty">
+        <p class="fc-empty">{{ 'MISSIONS.MAP_EMPTY' | translate }}</p>
+      </div>
+    }
+
+    <div #mapHost class="tracking-map__host" role="presentation"></div>
+  </div>
+</section>

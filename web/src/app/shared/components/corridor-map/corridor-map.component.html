@@ -1,0 +1,41 @@
+<section class="corridor-map" [attr.aria-label]="'AXES.MAP_TITLE' | translate">
+  <header class="corridor-map__header">
+    <h2 class="fc-panel__title">{{ 'AXES.MAP_TITLE' | translate }}</h2>
+    <ul class="corridor-map__legend" [attr.aria-label]="'AXES.MAP_LEGEND' | translate">
+      <li>
+        <span class="corridor-map__swatch corridor-map__swatch--actif" aria-hidden="true"></span>
+        {{ 'AXES.ETAT_ACTIF' | translate }}
+      </li>
+      <li>
+        <span class="corridor-map__swatch corridor-map__swatch--verrouille" aria-hidden="true"></span>
+        {{ 'AXES.ETAT_VERROUILLE' | translate }}
+      </li>
+      <li>
+        <span class="corridor-map__swatch corridor-map__swatch--inactif" aria-hidden="true"></span>
+        {{ 'AXES.ETAT_INACTIF' | translate }}
+      </li>
+    </ul>
+  </header>
+
+  <div class="corridor-map__frame">
+    @if (isLoading()) {
+      <div class="corridor-map__overlay" aria-busy="true">
+        <div class="fc-skeleton">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
+        <p>{{ 'AXES.MAP_LOADING' | translate }}</p>
+      </div>
+    } @else if (hasError()) {
+      <div class="corridor-map__overlay" role="alert">
+        <p class="fc-msg fc-msg--error">{{ 'AXES.MAP_ERROR' | translate }}</p>
+      </div>
+    } @else if (mapReady() && !hasGeoData()) {
+      <div class="corridor-map__overlay corridor-map__overlay--empty">
+        <p class="fc-empty">{{ 'AXES.MAP_EMPTY' | translate }}</p>
+      </div>
+    }
+
+    <div #mapHost class="corridor-map__host" role="presentation"></div>
+  </div>
+</section>

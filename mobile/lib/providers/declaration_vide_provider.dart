@@ -105,7 +105,7 @@ class DeclarationVideNotifier extends StateNotifier<DeclarationVideState> {
   // ── Envoi au serveur avec idempotence ─────────────────────
   Future<bool> _envoyerAuServeur(DeclarationVideModel d) async {
     try {
-      await _dio.post('/missions/declare-vide',
+      final response = await _dio.post('/missions/declare-vide',
         data: {
           'axeId': d.axeId,
           'latitude': d.latitude,
@@ -115,7 +115,8 @@ class DeclarationVideNotifier extends StateNotifier<DeclarationVideState> {
         },
         options: Options(headers: {'X-Idempotency-Key': d.idLocal}),
       );
-      await DeclarationLocalDb.marquerSynchronise(d.idLocal);
+      final missionId = response.data['id']?.toString();
+      await DeclarationLocalDb.marquerSynchronise(d.idLocal, missionId: missionId);
       await _chargerLocal();
       return true;
     } on DioException {

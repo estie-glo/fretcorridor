@@ -1,0 +1,78 @@
+<section class="fc-page dashboard">
+  <header class="fc-page__header">
+    <div>
+      <h1 class="fc-page__title">{{ 'DASHBOARD.TITLE' | translate }}</h1>
+      <p class="fc-page__subtitle">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
+    </div>
+  </header>
+
+  @if (isLoading()) {
+    <div class="fc-skeleton dashboard__skeleton" aria-busy="true">
+      <div class="fc-skeleton__line"></div>
+      <div class="fc-skeleton__line"></div>
+      <div class="fc-skeleton__line"></div>
+    </div>
+  } @else if (hasError()) {
+    <p class="fc-msg fc-msg--error" role="alert">{{ 'DASHBOARD.ERROR' | translate }}</p>
+  } @else {
+    <div class="dashboard__kpis">
+      @for (kpi of kpis(); track kpi.labelKey) {
+        @if (kpi.link) {
+          <a class="dashboard-kpi dashboard-kpi--link" [class]="'dashboard-kpi--' + (kpi.accent ?? 'neutral')" [routerLink]="kpi.link">
+            <span class="dashboard-kpi__value">{{ kpi.value }}</span>
+            <span class="dashboard-kpi__label">{{ kpi.labelKey | translate }}</span>
+          </a>
+        } @else {
+          <div class="dashboard-kpi" [class]="'dashboard-kpi--' + (kpi.accent ?? 'neutral')">
+            <span class="dashboard-kpi__value">{{ kpi.value }}</span>
+            <span class="dashboard-kpi__label">{{ kpi.labelKey | translate }}</span>
+          </div>
+        }
+      }
+    </div>
+
+    <div class="dashboard__charts">
+      @if (missionBars().length > 0) {
+        <section class="fc-panel dashboard-chart">
+          <h2 class="fc-panel__title">{{ 'DASHBOARD.CHART_MISSIONS' | translate }}</h2>
+          <ul class="dashboard-chart__bars">
+            @for (bar of missionBars(); track bar.label) {
+              <li class="dashboard-chart__row">
+                <span class="dashboard-chart__label">{{ bar.label }}</span>
+                <div class="dashboard-chart__track">
+                  <span
+                    class="dashboard-chart__fill"
+                    [class]="'dashboard-chart__fill--' + bar.variant"
+                    [style.width.%]="barWidth(bar.count, missionBars())"
+                  ></span>
+                </div>
+                <span class="dashboard-chart__count">{{ bar.count }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (axeBars().length > 0) {
+        <section class="fc-panel dashboard-chart">
+          <h2 class="fc-panel__title">{{ 'DASHBOARD.CHART_AXES' | translate }}</h2>
+          <ul class="dashboard-chart__bars">
+            @for (bar of axeBars(); track bar.label) {
+              <li class="dashboard-chart__row">
+                <span class="dashboard-chart__label">{{ bar.label }}</span>
+                <div class="dashboard-chart__track">
+                  <span
+                    class="dashboard-chart__fill"
+                    [class]="'dashboard-chart__fill--' + bar.variant"
+                    [style.width.%]="barWidth(bar.count, axeBars())"
+                  ></span>
+                </div>
+                <span class="dashboard-chart__count">{{ bar.count }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    </div>
+  }
+</section>

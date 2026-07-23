@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { KycSummary, getKycDisplayLabel } from '../../../shared/models/kyc.model';
+import { KycSummary, getKycDisplayLabel, getKycDisplayMeta } from '../../../shared/models/kyc.model';
+import { ToastService } from '../../../shared/services/toast.service';
 import { toRecordEntries } from '../../../shared/utils/record-display';
-import { KycService } from '../services/kyc.service';
+import { KycNiveau, KycService } from '../services/kyc.service';
 
 @Component({
   selector: 'app-kyc-pending-list',
@@ -13,6 +14,7 @@ import { KycService } from '../services/kyc.service';
 })
 export class KycPendingListComponent {
   private readonly kycService = inject(KycService);
+  private readonly toastService = inject(ToastService);
 
   readonly pendingKyc = signal<KycSummary[]>([]);
   readonly selectedKycId = signal<string | null>(null);
@@ -22,6 +24,7 @@ export class KycPendingListComponent {
   readonly loadError = signal(false);
   readonly validateError = signal(false);
   readonly validateSuccess = signal(false);
+  readonly docsMissing = signal(false);
 
   constructor() {
     this.loadPendingKyc();
@@ -29,6 +32,10 @@ export class KycPendingListComponent {
 
   getKycLabel(kyc: KycSummary): string {
     return getKycDisplayLabel(kyc);
+  }
+
+  getKycMeta(kyc: KycSummary): string {
+    return getKycDisplayMeta(kyc);
   }
 
   isSelected(kycId: string): boolean {
@@ -46,9 +53,10 @@ export class KycPendingListComponent {
     this.selectedEntries.set(kyc ? toRecordEntries(kyc.raw) : []);
     this.validateError.set(false);
     this.validateSuccess.set(false);
+    this.docsMissing.set(false);
   }
 
-  validateSelected(): void {
+  validateSelected(niveau: KycNiveau): void {
     const kycId = this.selectedKycId();
 
     if (!kycId || this.validatingId()) {
@@ -58,18 +66,26 @@ export class KycPendingListComponent {
     this.validatingId.set(kycId);
     this.validateError.set(false);
     this.validateSuccess.set(false);
+    this.docsMissing.set(false);
 
-    this.kycService.validateKyc(kycId).subscribe({
+    this.kycService.validateKyc(kycId, niveau).subscribe({
       next: () => {
         this.validatingId.set(null);
         this.validateSuccess.set(true);
+        this.toastService.show('KYC.VALIDATE_SUCCESS', 'success');
         this.pendingKyc.update((items) => items.filter((item) => item.id !== kycId));
         this.selectedKycId.set(null);
         this.selectedEntries.set([]);
       },
-      error: () => {
+      error: (err) => {
         this.validatingId.set(null);
-        this.validateError.set(true);
+        if (err?.status === 400) {
+          this.docsMissing.set(true);
+          this.toastService.show('KYC.DOCS_MISSING', 'error');
+        } else {
+          this.validateError.set(true);
+          this.toastService.show('KYC.VALIDATE_ERROR', 'error');
+        }
       },
     });
   }

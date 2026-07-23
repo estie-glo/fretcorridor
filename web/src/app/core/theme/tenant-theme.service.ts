@@ -18,6 +18,8 @@ export class TenantThemeService {
     const root = document.documentElement;
 
     root.style.setProperty('--fc-primary', primary);
+    root.style.setProperty('--fc-primary-hover', `color-mix(in srgb, ${primary} 85%, #000000)`);
+    root.style.setProperty('--fc-primary-soft', `color-mix(in srgb, ${primary} 8%, #ffffff)`);
     root.style.setProperty('--fc-primary-contrast', '#ffffff');
   }
 }

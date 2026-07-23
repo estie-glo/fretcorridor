@@ -3,36 +3,44 @@ spring:
     name: fretcorridor-backend
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/fretcorridor
-    username: fretcorridor
-    password: fretcorridor123
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/fretcorridor}
+    username: ${SPRING_DATASOURCE_USERNAME:fretcorridor}
+    password: ${SPRING_DATASOURCE_PASSWORD:fretcorridor123}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
+        format_sql: false
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6379}
+
+# MinIO — stockage justificatifs KYC (S8)
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:fretcorridor}
+  secret-key: ${MINIO_SECRET_KEY:fretcorridor123}
+  bucket: ${MINIO_BUCKET:fretcorridor-kyc}
+  presign-expiry-minutes: ${MINIO_PRESIGN_EXPIRY_MINUTES:15}
 
 server:
   address: 0.0.0.0
-  port: 8080
+  port: ${SERVER_PORT:8080}
 
 # JWT Configuration
 jwt:
-  secret: fretcorridor-secret-key-flysoft-engineering-2026-cemac-corridor
-  expiration: 86400000       # 24h en millisecondes
-  refresh-expiration: 2592000000  # 30j en millisecondes
+  secret: ${JWT_SECRET:fretcorridor-secret-key-flysoft-engineering-2026-cemac-corridor}
+  expiration: ${JWT_EXPIRATION:86400000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:2592000000}
 
 logging:
   level:
-    com.flysoft: DEBUG
-    org.springframework.security: DEBUG
+    com.flysoft: ${LOG_LEVEL_FLYSOFT:INFO}
+    org.springframework.security: ${LOG_LEVEL_SECURITY:INFO}

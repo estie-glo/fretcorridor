@@ -12,11 +12,47 @@
     "LOGOUT": "Sign out",
     "LOADING": "Signing in…",
     "ERROR_INVALID": "Invalid credentials. Check your phone and PIN.",
-    "ERROR_GENERIC": "Unable to sign in. Please try again later."
+    "ERROR_GENERIC": "Unable to sign in. Please try again later.",
+    "ERROR_UNKNOWN_USER": "Unknown phone number. Contact your agent.",
+    "ERROR_PIN_INCORRECT": "Incorrect PIN. Check your code.",
+    "ERROR_PIN_LAST_ATTEMPT": "Incorrect PIN. Last attempt before lockout.",
+    "ERROR_ACCOUNT_LOCKED": "Account locked after 3 attempts. Contact your agent.",
+    "ERROR_ACCOUNT_DISABLED": "Account disabled. Contact your agent.",
+    "ERROR_RATE_LIMIT": "Too many attempts. Try again in one minute.",
+    "ERROR_VALIDATION": "Invalid phone or PIN format.",
+    "PREVIEW_TITLE": "Track your corridors in real time",
+    "SHOWCASE_1_TITLE": "Live corridor map",
+    "SHOWCASE_1_SUBTITLE": "View hubs, axes and activation status across the CEMAC network.",
+    "SHOWCASE_2_TITLE": "Missions & freight offers",
+    "SHOWCASE_2_SUBTITLE": "Declare empty trucks, accept missions and track the full A-to-Z workflow.",
+    "SHOWCASE_3_TITLE": "Trust & compliance",
+    "SHOWCASE_3_SUBTITLE": "Multi-level KYC, notifications and audit trail to secure your operations.",
+    "DEMO_ACCOUNTS": "Demo accounts",
+    "DEMO_AGENT": "Field agent (Cameroon)",
+    "DEMO_BUREAU_TCHAD": "BNFT Chad bureau",
+    "DEMO_OPERATEUR": "Admin operator",
+    "DEMO_CHARGEUR": "Shipper"
   },
   "HOME": {
     "WELCOME": "Welcome",
-    "PLACEHOLDER": "Dashboard coming soon."
+    "PLACEHOLDER": "Operational dashboard."
+  },
+  "DASHBOARD": {
+    "TITLE": "Dashboard",
+    "SUBTITLE": "Corridor overview — live KPIs and distribution.",
+    "ERROR": "Unable to load the dashboard.",
+    "CHART_MISSIONS": "Missions by status",
+    "CHART_AXES": "Axes by state",
+    "KPI_AXES_ACTIFS": "Active axes",
+    "KPI_AXES_VERROUILLES": "Locked axes",
+    "KPI_MISSIONS_EN_COURS": "Missions in progress",
+    "KPI_OFFRES_VIDES": "Empty trucks",
+    "KPI_NOTIFS": "Unread notifications",
+    "KPI_KYC_PENDING": "Pending KYC",
+    "KPI_CHAUFFEURS": "Drivers",
+    "KPI_MISSIONS_ACTIVES": "Active missions",
+    "KPI_AUDIT": "Audit entries",
+    "KPI_OFFRES_DISPONIBLES": "Available offers"
   },
   "AXES": {
     "TITLE": "Corridor axes",
@@ -28,7 +64,16 @@
     "EMPTY": "No axes available yet.",
     "EMPTY_STATUT": "No status data for this axis.",
     "SELECT_AXE": "Select an axis to view its status.",
-    "STATUT_TITLE": "Axis status"
+    "STATUT_TITLE": "Axis status",
+    "MAP_TITLE": "Network map",
+    "MAP_LEGEND": "Activation status legend",
+    "MAP_LOADING": "Loading map…",
+    "MAP_ERROR": "Unable to load the corridor map.",
+    "MAP_EMPTY": "No geolocated hubs or corridors to display.",
+    "MAP_ZONE_SENSIBLE": "Sensitive zone",
+    "ETAT_ACTIF": "Active",
+    "ETAT_VERROUILLE": "Locked",
+    "ETAT_INACTIF": "Inactive"
   },
   "CHARGEUR": {
     "TITLE": "Distribution visibility",
@@ -40,32 +85,49 @@
     "EMPTY": "No distribution axes available.",
     "EMPTY_STATUT": "No status data for this axis.",
     "SELECT_AXE": "Select an axis to view its status.",
-    "STATUT_TITLE": "Distribution status"
+    "STATUT_TITLE": "Distribution status",
+    "OFFRES_TITLE": "Empty truck offers",
+    "OFFRES_SUBTITLE": "Declared empty trucks available on your axes.",
+    "OFFRES_LIST_LABEL": "Offers list",
+    "OFFRES_ERROR_LIST": "Unable to load offers.",
+    "OFFRES_EMPTY": "No empty truck offers at the moment.",
+    "OFFRES_SELECT": "Select an offer to view its details.",
+    "OFFRES_DETAIL_TITLE": "Offer details",
+    "OFFRES_ERROR_DETAIL": "Unable to load this offer's details.",
+    "OFFRES_EMPTY_DETAIL": "No detailed data for this offer."
   },
   "NAV": {
     "LABEL": "Main navigation",
+    "DASHBOARD": "Home",
     "BUREAU_AXES": "Corridor axes",
-    "CHARGEUR_DISTRIBUTION": "Distribution"
+    "BUREAU_MISSIONS": "Missions",
+    "CHARGEUR_DISTRIBUTION": "Distribution",
+    "CHARGEUR_OFFRES": "Offers",
+    "NOTIFICATIONS": "Notifications"
   },
   "ADMIN": {
     "TITLE": "Administration",
     "SUBTITLE": "FretCorridor back-office — validation and master data.",
     "NAV_LABEL": "Admin navigation",
     "KYC_NAV": "Pending KYC",
-    "CHAUFFEURS_NAV": "Drivers"
+    "CHAUFFEURS_NAV": "Drivers",
+    "AUDIT_NAV": "Audit log"
   },
   "KYC": {
     "TITLE": "Pending KYC cases",
-    "SUBTITLE": "Review and validate submitted cases.",
+    "SUBTITLE": "Review and validate cases (level 1 identity, level 2 supporting docs).",
     "LOADING": "Loading cases…",
     "ERROR_LIST": "Unable to load pending KYC cases.",
     "EMPTY": "No pending KYC cases.",
     "SELECT": "Select a case to view details.",
     "DETAIL_TITLE": "Case details",
     "VALIDATE": "Validate case",
+    "VALIDATE_N1": "Validate level 1",
+    "VALIDATE_N2": "Validate level 2",
     "VALIDATING": "Validating…",
     "VALIDATE_SUCCESS": "Case validated successfully.",
-    "VALIDATE_ERROR": "Unable to validate this case."
+    "VALIDATE_ERROR": "Unable to validate this case.",
+    "DOCS_MISSING": "Level 2 blocked: CNI and license required (MinIO)."
   },
   "CHAUFFEURS": {
     "TITLE": "Drivers",
@@ -79,8 +141,68 @@
     "SELECT": "Select a driver to view details.",
     "DETAIL_TITLE": "Driver profile"
   },
+  "MISSIONS": {
+    "TITLE": "Corridor missions",
+    "SUBTITLE": "Supervise missions and GPS tracking for your tenant.",
+    "LOADING_LIST": "Loading missions…",
+    "LOADING_DETAIL": "Loading details…",
+    "ERROR_LIST": "Unable to load the missions list.",
+    "ERROR_DETAIL": "Unable to load this mission details.",
+    "ERROR_ACTION": "Status transition failed.",
+    "ACTION_SUCCESS": "Mission updated successfully.",
+    "FILTER_STATUT": "Status",
+    "FILTER_AXE": "Axis",
+    "FILTER_ALL": "All",
+    "EMPTY": "No missions yet.",
+    "EMPTY_DETAIL": "No detail data for this mission.",
+    "SELECT": "Select a mission to view details.",
+    "DETAIL_TITLE": "Mission details",
+    "ACTIONS": "Mission actions",
+    "ACCEPT": "Accept",
+    "START": "Start",
+    "COMPLETE": "Complete",
+    "CANCEL": "Cancel",
+    "ETA_TITLE": "Estimated ETA",
+    "TRACKING_TITLE": "Tracking",
+    "TRACKING_POINTS": "GPS points",
+    "ZONE_SENSIBLE": "Sensitive zone",
+    "MAP_TITLE": "Live map tracking",
+    "MAP_POSITION": "Current position",
+    "MAP_UPDATED": "Last update",
+    "MAP_LOADING": "Loading tracking…",
+    "MAP_ERROR": "Unable to load GPS tracking.",
+    "MAP_EMPTY": "No GPS positions to display for this mission."
+  },
   "LANG": {
     "FR": "Français",
     "EN": "English"
+  },
+  "NOTIF": {
+    "TITLE": "Notifications",
+    "SUBTITLE": "Mission alerts and operational messages (IN_APP · external channels stubbed).",
+    "LIST_LABEL": "Notifications list",
+    "DETAIL_TITLE": "Detail",
+    "SELECT": "Select a notification.",
+    "EMPTY": "No notifications yet.",
+    "ERROR": "Unable to load notifications.",
+    "UNREAD": "Unread",
+    "FIELD_TYPE": "Type",
+    "FIELD_CANAL": "Channel",
+    "FIELD_STATUS": "Delivery status",
+    "FIELD_DATE": "Date"
+  },
+  "AUDIT": {
+    "TITLE": "Audit log",
+    "SUBTITLE": "Append-only trail of sensitive actions (KYC, axes, missions).",
+    "LIST_LABEL": "Audit entries",
+    "DETAIL_TITLE": "Detail",
+    "SELECT": "Select an entry.",
+    "EMPTY": "No audit entries yet.",
+    "ERROR": "Unable to load the audit log.",
+    "FIELD_ACTOR": "Actor",
+    "FIELD_RESOURCE": "Resource",
+    "FIELD_CHANGE": "Change",
+    "BEFORE": "Before",
+    "AFTER": "After"
   }
 }

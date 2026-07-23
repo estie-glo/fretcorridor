@@ -1,0 +1,109 @@
+<section class="fc-page">
+  <header class="fc-page__header">
+    <div>
+      <h1 class="fc-page__title">{{ 'AUDIT.TITLE' | translate }}</h1>
+      <p class="fc-page__subtitle">{{ 'AUDIT.SUBTITLE' | translate }}</p>
+    </div>
+    @if (!isLoading() && !hasError()) {
+      <span class="fc-page__count">{{ entries().length }}</span>
+    }
+  </header>
+
+  <div class="fc-split">
+    <aside class="fc-panel" [attr.aria-label]="'AUDIT.LIST_LABEL' | translate">
+      @if (isLoading()) {
+        <div class="fc-skeleton" aria-busy="true">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
+      } @else if (hasError()) {
+        <p class="fc-msg fc-msg--error" role="alert">{{ 'AUDIT.ERROR' | translate }}</p>
+      } @else if (entries().length === 0) {
+        <div class="fc-empty">{{ 'AUDIT.EMPTY' | translate }}</div>
+      } @else {
+        <ul class="fc-list">
+          @for (entry of entries(); track entry.id) {
+            <li>
+              <button
+                type="button"
+                class="fc-list__item"
+                [class.fc-list__item--active]="isSelected(entry.id)"
+                (click)="select(entry.id)"
+              >
+                <span class="fc-list__label">{{ label(entry) }}</span>
+                <span class="fc-list__meta">{{ meta(entry) }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </aside>
+
+    <section class="fc-panel">
+      <h2 class="fc-panel__title">{{ 'AUDIT.DETAIL_TITLE' | translate }}</h2>
+      @if (!selectedId()) {
+        <div class="fc-empty">{{ 'AUDIT.SELECT' | translate }}</div>
+      } @else if (selectedEntry(); as entry) {
+        <ol class="audit-timeline">
+          <li class="audit-timeline__item">
+            <span class="audit-timeline__dot"></span>
+            <div class="audit-timeline__content">
+              <p class="audit-timeline__title">{{ entry.action || '—' }}</p>
+              <p class="audit-timeline__meta">{{ formatDate(entry.horodatage ?? '') }}</p>
+            </div>
+          </li>
+
+          @if (entry.acteurRole || entry.acteurId) {
+            <li class="audit-timeline__item">
+              <span class="audit-timeline__dot"></span>
+              <div class="audit-timeline__content">
+                <p class="audit-timeline__label">{{ 'AUDIT.FIELD_ACTOR' | translate }}</p>
+                <p class="audit-timeline__value">
+                  {{ entry.acteurRole || '—' }}
+                  @if (entry.acteurId) {
+                    · {{ entry.acteurId }}
+                  }
+                </p>
+              </div>
+            </li>
+          }
+
+          @if (entry.ressourceType || entry.ressourceId) {
+            <li class="audit-timeline__item">
+              <span class="audit-timeline__dot"></span>
+              <div class="audit-timeline__content">
+                <p class="audit-timeline__label">{{ 'AUDIT.FIELD_RESOURCE' | translate }}</p>
+                <p class="audit-timeline__value">
+                  {{ entry.ressourceType || '—' }}
+                  @if (entry.ressourceId) {
+                    · {{ entry.ressourceId }}
+                  }
+                </p>
+              </div>
+            </li>
+          }
+
+          @if (entry.avant || entry.apres) {
+            <li class="audit-timeline__item audit-timeline__item--change">
+              <span class="audit-timeline__dot"></span>
+              <div class="audit-timeline__content">
+                <p class="audit-timeline__label">{{ 'AUDIT.FIELD_CHANGE' | translate }}</p>
+                @if (entry.avant) {
+                  <p class="audit-timeline__before">
+                    <span>{{ 'AUDIT.BEFORE' | translate }}</span> {{ entry.avant }}
+                  </p>
+                }
+                @if (entry.apres) {
+                  <p class="audit-timeline__after">
+                    <span>{{ 'AUDIT.AFTER' | translate }}</span> {{ entry.apres }}
+                  </p>
+                }
+              </div>
+            </li>
+          }
+        </ol>
+      }
+    </section>
+  </div>
+</section>

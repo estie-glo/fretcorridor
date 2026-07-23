@@ -1,61 +1,72 @@
-<section class="chauffeurs-page">
-  <header class="chauffeurs-page__header">
-    <h2 class="chauffeurs-page__title">{{ 'CHAUFFEURS.TITLE' | translate }}</h2>
-    <p class="chauffeurs-page__subtitle">{{ 'CHAUFFEURS.SUBTITLE' | translate }}</p>
+<section class="fc-page">
+  <header class="fc-page__header">
+    <div>
+      <h1 class="fc-page__title">{{ 'CHAUFFEURS.TITLE' | translate }}</h1>
+      <p class="fc-page__subtitle">{{ 'CHAUFFEURS.SUBTITLE' | translate }}</p>
+    </div>
+    @if (!isLoadingList() && !listError()) {
+      <span class="fc-page__count">{{ chauffeurs().length }}</span>
+    }
   </header>
 
-  <div class="chauffeurs-layout">
-    <div class="chauffeurs-panel">
+  <div class="fc-split">
+    <aside class="fc-panel">
       @if (isLoadingList()) {
-        <p class="chauffeurs-panel__message">{{ 'CHAUFFEURS.LOADING_LIST' | translate }}</p>
+        <div class="fc-skeleton" aria-busy="true">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
       } @else if (listError()) {
-        <p class="chauffeurs-panel__message chauffeurs-panel__message--error" role="alert">
-          {{ 'CHAUFFEURS.ERROR_LIST' | translate }}
-        </p>
+        <p class="fc-msg fc-msg--error" role="alert">{{ 'CHAUFFEURS.ERROR_LIST' | translate }}</p>
       } @else if (chauffeurs().length === 0) {
-        <p class="chauffeurs-panel__message">{{ 'CHAUFFEURS.EMPTY' | translate }}</p>
+        <div class="fc-empty">{{ 'CHAUFFEURS.EMPTY' | translate }}</div>
       } @else {
-        <ul class="chauffeurs-list">
+        <ul class="fc-list">
           @for (chauffeur of chauffeurs(); track chauffeur.id) {
             <li>
               <button
                 type="button"
-                class="chauffeurs-list__item"
-                [class.chauffeurs-list__item--active]="isSelected(chauffeur.id)"
+                class="fc-list__item"
+                [class.fc-list__item--active]="isSelected(chauffeur.id)"
                 (click)="selectChauffeur(chauffeur.id)"
               >
-                <span class="chauffeurs-list__label">{{ getChauffeurLabel(chauffeur) }}</span>
-                <span class="chauffeurs-list__id">#{{ chauffeur.id }}</span>
+                <span class="fc-list__label">{{ getChauffeurLabel(chauffeur) }}</span>
+                @if (getChauffeurMeta(chauffeur); as meta) {
+                  <span class="fc-list__meta">{{ meta }}</span>
+                }
               </button>
             </li>
           }
         </ul>
       }
-    </div>
+    </aside>
 
-    <div class="chauffeur-detail">
-      <h3 class="chauffeur-detail__title">{{ 'CHAUFFEURS.DETAIL_TITLE' | translate }}</h3>
+    <section class="fc-panel">
+      <h2 class="fc-panel__title">{{ 'CHAUFFEURS.DETAIL_TITLE' | translate }}</h2>
 
       @if (!selectedChauffeurId()) {
-        <p class="chauffeur-detail__message">{{ 'CHAUFFEURS.SELECT' | translate }}</p>
+        <div class="fc-empty">{{ 'CHAUFFEURS.SELECT' | translate }}</div>
       } @else if (isLoadingDetail()) {
-        <p class="chauffeur-detail__message">{{ 'CHAUFFEURS.LOADING_DETAIL' | translate }}</p>
+        <div class="fc-skeleton" aria-busy="true">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
       } @else if (detailError()) {
-        <p class="chauffeur-detail__message chauffeur-detail__message--error" role="alert">
-          {{ 'CHAUFFEURS.ERROR_DETAIL' | translate }}
-        </p>
+        <p class="fc-msg fc-msg--error" role="alert">{{ 'CHAUFFEURS.ERROR_DETAIL' | translate }}</p>
       } @else if (detailEntries().length === 0) {
-        <p class="chauffeur-detail__message">{{ 'CHAUFFEURS.EMPTY_DETAIL' | translate }}</p>
+        <div class="fc-empty">{{ 'CHAUFFEURS.EMPTY_DETAIL' | translate }}</div>
       } @else {
-        <dl class="chauffeur-details">
+        <dl class="fc-dl">
           @for (entry of detailEntries(); track entry.key) {
-            <div class="chauffeur-details__row">
+            <div class="fc-dl__row">
               <dt>{{ entry.key }}</dt>
               <dd>{{ entry.value }}</dd>
             </div>
           }
         </dl>
       }
-    </div>
+    </section>
   </div>
 </section>

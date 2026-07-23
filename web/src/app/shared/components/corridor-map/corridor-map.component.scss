@@ -1,0 +1,148 @@
+:host {
+  display: block;
+}
+
+.corridor-map {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fc-space-3);
+  padding: var(--fc-space-4);
+  border: 1px solid var(--fc-border);
+  border-radius: var(--fc-radius);
+  background: var(--fc-surface);
+}
+
+.corridor-map__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--fc-space-3);
+}
+
+.corridor-map__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--fc-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--fc-muted);
+}
+
+.corridor-map__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--fc-space-2);
+}
+
+.corridor-map__swatch {
+  display: inline-block;
+  width: 1.25rem;
+  height: 0.25rem;
+  border-radius: 999px;
+}
+
+.corridor-map__swatch--actif {
+  background: #d40f16;
+}
+
+.corridor-map__swatch--verrouille {
+  background: #b54708;
+}
+
+.corridor-map__swatch--inactif {
+  background: #a1a1aa;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #a1a1aa 0,
+    #a1a1aa 0.35rem,
+    transparent 0.35rem,
+    transparent 0.55rem
+  );
+}
+
+.corridor-map__frame {
+  position: relative;
+  min-height: 14rem;
+  height: clamp(14rem, 38dvh, 28rem);
+  border-radius: var(--fc-radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--fc-border);
+  background: color-mix(in srgb, var(--fc-bg) 70%, #dbe4ee);
+}
+
+.corridor-map__host {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.corridor-map__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--fc-space-3);
+  padding: var(--fc-space-4);
+  background: color-mix(in srgb, var(--fc-surface) 88%, transparent);
+  text-align: center;
+}
+
+.corridor-map__overlay--empty {
+  pointer-events: none;
+}
+
+.corridor-map__overlay .fc-skeleton {
+  width: min(16rem, 80%);
+}
+
+/* Leaflet popups — align with product type */
+:host ::ng-deep .leaflet-popup-content-wrapper {
+  border-radius: var(--fc-radius-sm);
+  box-shadow: var(--fc-shadow-sm);
+  font-family: var(--fc-font);
+  font-size: 0.8125rem;
+}
+
+:host ::ng-deep .leaflet-popup-content {
+  margin: 0.75rem 0.875rem;
+  line-height: 1.4;
+}
+
+:host ::ng-deep .leaflet-container a {
+  color: var(--fc-primary);
+}
+
+@media (max-width: 720px) {
+  .corridor-map {
+    padding: var(--fc-space-3);
+    gap: var(--fc-space-2);
+  }
+
+  .corridor-map__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .corridor-map__legend {
+    gap: var(--fc-space-2);
+    font-size: 0.6875rem;
+  }
+
+  .corridor-map__frame {
+    min-height: 12rem;
+    height: clamp(12rem, 34dvh, 22rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .corridor-map__legend li {
+    flex: 1 1 auto;
+  }
+}

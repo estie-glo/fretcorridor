@@ -3,55 +3,122 @@
     <app-language-switcher />
   </div>
 
-  <div class="login-card">
-    <header class="login-card__header">
-      <p class="login-card__eyebrow">{{ 'APP.TAGLINE' | translate }}</p>
-      <h1 class="login-card__title">{{ 'APP.TITLE' | translate }}</h1>
-    </header>
+  <div class="login-layout">
+    <div class="login-pane">
+      <div class="login-card">
+        <header class="login-card__header">
+          <div class="login-card__logo">
+            <app-brand-logo size="lg" />
+          </div>
+          <h1 class="login-card__title">{{ 'AUTH.LOGIN' | translate }}</h1>
+          <p class="login-card__hint">{{ 'APP.TAGLINE' | translate }}</p>
+        </header>
 
-    <form class="login-form" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="field">
-        <label class="field__label" for="telephone">{{ 'AUTH.PHONE' | translate }}</label>
-        <input
-          id="telephone"
-          class="field__input"
-          type="tel"
-          autocomplete="tel"
-          formControlName="telephone"
-          [placeholder]="'AUTH.PHONE_PLACEHOLDER' | translate"
-        />
-        @if (form.controls.telephone.touched && form.controls.telephone.invalid) {
-          <p class="field__error">{{ 'AUTH.ERROR_INVALID' | translate }}</p>
+        <form class="login-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="field">
+            <label class="field__label" for="telephone">{{ 'AUTH.PHONE' | translate }}</label>
+            <input
+              id="telephone"
+              class="field__input"
+              type="tel"
+              autocomplete="tel"
+              formControlName="telephone"
+              [placeholder]="'AUTH.PHONE_PLACEHOLDER' | translate"
+            />
+            @if (form.controls.telephone.touched && form.controls.telephone.invalid) {
+              <p class="field__error">{{ 'AUTH.ERROR_INVALID' | translate }}</p>
+            }
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="pin">{{ 'AUTH.PIN' | translate }}</label>
+            <input
+              id="pin"
+              class="field__input"
+              type="password"
+              inputmode="numeric"
+              autocomplete="current-password"
+              formControlName="pin"
+              [placeholder]="'AUTH.PIN_PLACEHOLDER' | translate"
+            />
+            @if (form.controls.pin.touched && form.controls.pin.invalid) {
+              <p class="field__error">{{ 'AUTH.ERROR_INVALID' | translate }}</p>
+            }
+          </div>
+
+          @if (errorMessage(); as messageKey) {
+            <p class="login-form__error" role="alert">{{ messageKey | translate }}</p>
+          }
+
+          <button class="fc-btn fc-btn--primary fc-btn--block" type="submit" [disabled]="isSubmitting">
+            @if (isSubmitting) {
+              {{ 'AUTH.LOADING' | translate }}
+            } @else {
+              {{ 'AUTH.LOGIN' | translate }}
+            }
+          </button>
+        </form>
+
+        @if (enableDemoLogin) {
+          <div class="login-demo">
+            <p class="login-demo__label">{{ 'AUTH.DEMO_ACCOUNTS' | translate }}</p>
+            <div class="login-demo__buttons">
+              @for (account of demoAccounts; track account.telephone) {
+                <button
+                  type="button"
+                  class="fc-btn fc-btn--ghost fc-btn--sm fc-btn--block login-demo__btn"
+                  [disabled]="isSubmitting"
+                  (click)="loginAsDemo(account)"
+                >
+                  {{ account.labelKey | translate }}
+                </button>
+              }
+            </div>
+          </div>
         }
       </div>
+    </div>
 
-      <div class="field">
-        <label class="field__label" for="pin">{{ 'AUTH.PIN' | translate }}</label>
-        <input
-          id="pin"
-          class="field__input"
-          type="password"
-          inputmode="numeric"
-          autocomplete="current-password"
-          formControlName="pin"
-          [placeholder]="'AUTH.PIN_PLACEHOLDER' | translate"
-        />
-        @if (form.controls.pin.touched && form.controls.pin.invalid) {
-          <p class="field__error">{{ 'AUTH.ERROR_INVALID' | translate }}</p>
-        }
-      </div>
-
-      @if (errorMessage(); as messageKey) {
-        <p class="login-form__error" role="alert">{{ messageKey | translate }}</p>
+    <div class="login-showcase" aria-hidden="true">
+      @if (isVideoSlide()) {
+        <video
+          #showcaseVideo
+          class="login-showcase__video"
+          autoplay
+          muted
+          playsinline
+          preload="metadata"
+          (ended)="onVideoEnded()"
+        ></video>
       }
 
-      <button class="login-form__submit" type="submit" [disabled]="isSubmitting">
-        @if (isSubmitting) {
-          {{ 'AUTH.LOADING' | translate }}
-        } @else {
-          {{ 'AUTH.LOGIN' | translate }}
-        }
-      </button>
-    </form>
+      @if (isOutroSlide()) {
+        <div class="login-showcase__outro login-showcase__outro--visible">
+          <img
+            class="login-showcase__outro-image"
+            [src]="currentSlide().src"
+            alt=""
+          />
+          <div class="login-showcase__outro-brand">
+            <div class="login-showcase__outro-logo-wrap">
+              <img
+                class="login-showcase__outro-logo"
+                src="/assets/logo-showcase.png"
+                alt="FretCorridor"
+              />
+            </div>
+          </div>
+        </div>
+      }
+
+      <div class="login-showcase__scrim"></div>
+
+      <div class="login-showcase__caption">
+        <div class="login-showcase__caption-inner" [attr.data-slide]="slideIndex()">
+          <p class="login-showcase__title">{{ currentSlide().titleKey | translate }}</p>
+          <p class="login-showcase__subtitle">{{ currentSlide().subtitleKey | translate }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>

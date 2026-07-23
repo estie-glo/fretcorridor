@@ -20,7 +20,10 @@ Ce dossier centralise la documentation transverse du monorepo (hors README propr
 
 ## Fichiers existants
 
-- `CONTEXT.md` — contexte technique du portail web (Angular), maintenu pour reprise rapide par IDE/agents.
+- `ROADMAP.md` — **roadmap sprints** (pilotage ; mise à jour à chaque évolution de code).
+- `CONTEXT.md` — contexte technique monorepo (backend / web / mobile), section Sprint & roadmap.
+- `backend-structure.md` — organisation des packages Spring (`api.web` / `api.mobile` / `api.shared` / `common`).
+- `analyse-integration-mobile.md` — gouvernance monorepo (web / mobile / shared), comparaison annexes, plan d'intégration démo.
 
 ## Ne pas déposer ici
 

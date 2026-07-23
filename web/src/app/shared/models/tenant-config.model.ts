@@ -10,7 +10,8 @@ export interface TenantConfig {
   [key: string]: unknown;
 }
 
-const DISPLAY_NAME_KEYS = ['nom', 'name', 'libelle', 'code'] as const;
+// `nomBureau` est le champ renvoyé par le backend (`ConfigTenant`).
+const DISPLAY_NAME_KEYS = ['nomBureau', 'nom', 'name', 'libelle', 'code'] as const;
 const PRIMARY_COLOR_KEYS = [
   'couleurPrimaire',
   'primaryColor',
@@ -19,7 +20,8 @@ const PRIMARY_COLOR_KEYS = [
   'themeColor',
 ] as const;
 
-const DEFAULT_PRIMARY = '#0f7a4a';
+/** Rouge marque FretCorridor (extrait du logo). */
+const DEFAULT_PRIMARY = '#d40f16';
 
 export function getTenantDisplayName(config: TenantConfig | null): string {
   if (!config) {

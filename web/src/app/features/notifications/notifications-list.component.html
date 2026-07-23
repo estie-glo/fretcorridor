@@ -1,0 +1,80 @@
+<section class="fc-page">
+  <header class="fc-page__header">
+    <div>
+      <h1 class="fc-page__title">{{ 'NOTIF.TITLE' | translate }}</h1>
+      <p class="fc-page__subtitle">{{ 'NOTIF.SUBTITLE' | translate }}</p>
+    </div>
+    @if (!isLoading() && !hasError()) {
+      <span class="fc-page__count" [attr.title]="'NOTIF.UNREAD' | translate">
+        {{ unreadCount() }}
+      </span>
+    }
+  </header>
+
+  <div class="fc-split">
+    <aside class="fc-panel" [attr.aria-label]="'NOTIF.LIST_LABEL' | translate">
+      @if (isLoading()) {
+        <div class="fc-skeleton" aria-busy="true">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
+      } @else if (hasError()) {
+        <p class="fc-msg fc-msg--error" role="alert">{{ 'NOTIF.ERROR' | translate }}</p>
+      } @else if (items().length === 0) {
+        <div class="fc-empty">{{ 'NOTIF.EMPTY' | translate }}</div>
+      } @else {
+        <ul class="fc-list">
+          @for (item of items(); track item.id) {
+            <li>
+              <button
+                type="button"
+                class="fc-list__item"
+                [class.fc-list__item--active]="isSelected(item.id)"
+                [class.notif-item--unread]="!item.lue"
+                (click)="select(item.id)"
+              >
+                <span class="fc-list__label">{{ title(item) }}</span>
+                <span class="fc-list__meta">
+                  {{ item.canal || '—' }}
+                  @if (item.statutEnvoi) {
+                    · {{ item.statutEnvoi }}
+                  }
+                </span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </aside>
+
+    <section class="fc-panel">
+      <h2 class="fc-panel__title">{{ 'NOTIF.DETAIL_TITLE' | translate }}</h2>
+
+      @if (!selected()) {
+        <div class="fc-empty">{{ 'NOTIF.SELECT' | translate }}</div>
+      } @else {
+        <p class="notif-detail__title">{{ title(selected()!) }}</p>
+        <p class="notif-detail__body">{{ body(selected()!) }}</p>
+        <dl class="fc-dl">
+          <div class="fc-dl__row">
+            <dt>{{ 'NOTIF.FIELD_TYPE' | translate }}</dt>
+            <dd>{{ selected()!.type || '—' }}</dd>
+          </div>
+          <div class="fc-dl__row">
+            <dt>{{ 'NOTIF.FIELD_CANAL' | translate }}</dt>
+            <dd>{{ selected()!.canal || '—' }}</dd>
+          </div>
+          <div class="fc-dl__row">
+            <dt>{{ 'NOTIF.FIELD_STATUS' | translate }}</dt>
+            <dd>{{ selected()!.statutEnvoi || '—' }}</dd>
+          </div>
+          <div class="fc-dl__row">
+            <dt>{{ 'NOTIF.FIELD_DATE' | translate }}</dt>
+            <dd>{{ selected()!.dateCreation || '—' }}</dd>
+          </div>
+        </dl>
+      }
+    </section>
+  </div>
+</section>

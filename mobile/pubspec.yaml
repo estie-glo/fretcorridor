@@ -18,13 +18,6 @@ dependencies:
   # Stockage sécurisé (JWT)
   flutter_secure_storage: ^10.3.1
 
-  # Navigation
-  go_router: ^17.3.0
-
-  # Firebase (notifications push)
-  firebase_core: ^4.12.0
-  firebase_messaging: ^16.4.2
-
   # GPS
   geolocator: ^14.0.3
 
@@ -39,7 +32,6 @@ dependencies:
   connectivity_plus: ^7.2.0
 
   # Interface
-  cached_network_image: ^3.3.1
   image_picker: ^1.2.3
   # Polices
   google_fonts: ^6.2.1

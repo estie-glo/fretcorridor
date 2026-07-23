@@ -1,23 +1,29 @@
 <div class="shell">
   <header class="shell__header">
-    <div class="shell__brand">
-      <span class="shell__app-name">{{ 'APP.TITLE' | translate }}</span>
-      @if (tenantName()) {
-        <span class="shell__tenant">{{ tenantName() }}</span>
-      }
-    </div>
+    <div class="shell__header-inner">
+      <div class="shell__brand">
+        <app-brand-logo size="sm" />
+        @if (tenantName()) {
+          <span class="shell__tenant">{{ tenantName() }}</span>
+        }
+      </div>
 
-    <div class="shell__actions">
-      <app-language-switcher />
-      <button type="button" class="shell__logout" (click)="logout()">
-        {{ 'AUTH.LOGOUT' | translate }}
-      </button>
+      <app-shell-nav />
+
+      <div class="shell__actions">
+        <app-language-switcher />
+        <button type="button" class="fc-btn fc-btn--ghost fc-btn--sm" (click)="logout()">
+          {{ 'AUTH.LOGOUT' | translate }}
+        </button>
+      </div>
     </div>
   </header>
 
-  <app-shell-nav />
-
   <main class="shell__main">
-    <router-outlet />
+    <div class="shell__main-inner">
+      <router-outlet />
+    </div>
   </main>
+
+  <app-toast-host />
 </div>

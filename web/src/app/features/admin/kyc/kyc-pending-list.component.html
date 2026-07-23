@@ -1,78 +1,98 @@
-<section class="kyc-page">
+<section class="fc-page">
   @if (validateSuccess()) {
-    <p class="kyc-page__banner kyc-page__banner--success" role="status">
+    <p class="fc-banner fc-banner--success" role="status">
       {{ 'KYC.VALIDATE_SUCCESS' | translate }}
     </p>
   }
 
-  <header class="kyc-page__header">
-    <h2 class="kyc-page__title">{{ 'KYC.TITLE' | translate }}</h2>
-    <p class="kyc-page__subtitle">{{ 'KYC.SUBTITLE' | translate }}</p>
+  <header class="fc-page__header">
+    <div>
+      <h1 class="fc-page__title">{{ 'KYC.TITLE' | translate }}</h1>
+      <p class="fc-page__subtitle">{{ 'KYC.SUBTITLE' | translate }}</p>
+    </div>
+    @if (!isLoading() && !loadError()) {
+      <span class="fc-page__count">{{ pendingKyc().length }}</span>
+    }
   </header>
 
-  <div class="kyc-layout">
-    <div class="kyc-panel">
+  <div class="fc-split">
+    <aside class="fc-panel">
       @if (isLoading()) {
-        <p class="kyc-panel__message">{{ 'KYC.LOADING' | translate }}</p>
+        <div class="fc-skeleton" aria-busy="true">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
       } @else if (loadError()) {
-        <p class="kyc-panel__message kyc-panel__message--error" role="alert">
-          {{ 'KYC.ERROR_LIST' | translate }}
-        </p>
+        <p class="fc-msg fc-msg--error" role="alert">{{ 'KYC.ERROR_LIST' | translate }}</p>
       } @else if (pendingKyc().length === 0) {
-        <p class="kyc-panel__message">{{ 'KYC.EMPTY' | translate }}</p>
+        <div class="fc-empty">{{ 'KYC.EMPTY' | translate }}</div>
       } @else {
-        <ul class="kyc-list">
+        <ul class="fc-list">
           @for (kyc of pendingKyc(); track kyc.id) {
             <li>
               <button
                 type="button"
-                class="kyc-list__item"
-                [class.kyc-list__item--active]="isSelected(kyc.id)"
+                class="fc-list__item"
+                [class.fc-list__item--active]="isSelected(kyc.id)"
                 (click)="selectKyc(kyc.id)"
               >
-                <span class="kyc-list__label">{{ getKycLabel(kyc) }}</span>
-                <span class="kyc-list__id">#{{ kyc.id }}</span>
+                <span class="fc-list__label">{{ getKycLabel(kyc) }}</span>
+                @if (getKycMeta(kyc); as meta) {
+                  <span class="fc-list__meta">{{ meta }}</span>
+                }
               </button>
             </li>
           }
         </ul>
       }
-    </div>
+    </aside>
 
-    <div class="kyc-detail">
-      <h3 class="kyc-detail__title">{{ 'KYC.DETAIL_TITLE' | translate }}</h3>
+    <section class="fc-panel">
+      <h2 class="fc-panel__title">{{ 'KYC.DETAIL_TITLE' | translate }}</h2>
 
       @if (!selectedKycId()) {
-        <p class="kyc-detail__message">{{ 'KYC.SELECT' | translate }}</p>
+        <div class="fc-empty">{{ 'KYC.SELECT' | translate }}</div>
       } @else {
         @if (validateError()) {
-          <p class="kyc-detail__message kyc-detail__message--error" role="alert">
-            {{ 'KYC.VALIDATE_ERROR' | translate }}
-          </p>
+          <p class="fc-banner fc-banner--error" role="alert">{{ 'KYC.VALIDATE_ERROR' | translate }}</p>
+        }
+        @if (docsMissing()) {
+          <p class="fc-banner fc-banner--error" role="alert">{{ 'KYC.DOCS_MISSING' | translate }}</p>
         }
 
-        <dl class="kyc-details">
+        <dl class="fc-dl">
           @for (entry of selectedEntries(); track entry.key) {
-            <div class="kyc-details__row">
+            <div class="fc-dl__row">
               <dt>{{ entry.key }}</dt>
               <dd>{{ entry.value }}</dd>
             </div>
           }
         </dl>
 
-        <button
-          type="button"
-          class="kyc-detail__validate"
-          [disabled]="isValidating(selectedKycId()!)"
-          (click)="validateSelected()"
-        >
-          @if (isValidating(selectedKycId()!)) {
-            {{ 'KYC.VALIDATING' | translate }}
-          } @else {
-            {{ 'KYC.VALIDATE' | translate }}
-          }
-        </button>
+        <div class="fc-actions fc-actions--stack-sm kyc-actions">
+          <button
+            type="button"
+            class="fc-btn fc-btn--primary"
+            [disabled]="isValidating(selectedKycId()!)"
+            (click)="validateSelected('NIVEAU_1')"
+          >
+            @if (isValidating(selectedKycId()!)) {
+              {{ 'KYC.VALIDATING' | translate }}
+            } @else {
+              {{ 'KYC.VALIDATE_N1' | translate }}
+            }
+          </button>
+          <button
+            type="button"
+            class="fc-btn fc-btn--ghost"
+            [disabled]="isValidating(selectedKycId()!)"
+            (click)="validateSelected('NIVEAU_2')"
+          >
+            {{ 'KYC.VALIDATE_N2' | translate }}
+          </button>
+        </div>
       }
-    </div>
+    </section>
   </div>
 </section>

@@ -1,0 +1,89 @@
+:host {
+  display: block;
+}
+
+.tracking-map {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fc-space-3);
+  padding: var(--fc-space-4);
+  border: 1px solid var(--fc-border);
+  border-radius: var(--fc-radius);
+  background: var(--fc-surface);
+}
+
+.tracking-map__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--fc-space-2);
+}
+
+.tracking-map__updated {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--fc-muted);
+}
+
+.tracking-map__frame {
+  position: relative;
+  min-height: 12rem;
+  height: clamp(12rem, 34dvh, 24rem);
+  border-radius: var(--fc-radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--fc-border);
+  background: color-mix(in srgb, var(--fc-bg) 70%, #dbe4ee);
+}
+
+.tracking-map__host {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.tracking-map__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--fc-space-3);
+  padding: var(--fc-space-4);
+  background: color-mix(in srgb, var(--fc-surface) 88%, transparent);
+  text-align: center;
+}
+
+.tracking-map__overlay--empty {
+  pointer-events: none;
+}
+
+.tracking-map__overlay .fc-skeleton {
+  width: min(16rem, 80%);
+}
+
+:host ::ng-deep .leaflet-popup-content-wrapper {
+  border-radius: var(--fc-radius-sm);
+  box-shadow: var(--fc-shadow-sm);
+  font-family: var(--fc-font);
+  font-size: 0.8125rem;
+}
+
+:host ::ng-deep .leaflet-popup-content {
+  margin: 0.75rem 0.875rem;
+  line-height: 1.4;
+}
+
+@media (max-width: 720px) {
+  .tracking-map {
+    padding: var(--fc-space-3);
+  }
+
+  .tracking-map__frame {
+    min-height: 10rem;
+    height: clamp(10rem, 30dvh, 18rem);
+  }
+}

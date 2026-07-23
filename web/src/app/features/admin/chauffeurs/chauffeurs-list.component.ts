@@ -4,6 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import {
   ChauffeurSummary,
   getChauffeurDisplayLabel,
+  getChauffeurDisplayMeta,
 } from '../../../shared/models/chauffeur.model';
 import { toRecordEntries } from '../../../shared/utils/record-display';
 import { ChauffeursService } from '../services/chauffeurs.service';
@@ -31,6 +32,10 @@ export class ChauffeursListComponent {
 
   getChauffeurLabel(chauffeur: ChauffeurSummary): string {
     return getChauffeurDisplayLabel(chauffeur);
+  }
+
+  getChauffeurMeta(chauffeur: ChauffeurSummary): string {
+    return getChauffeurDisplayMeta(chauffeur);
   }
 
   isSelected(chauffeurId: string): boolean {

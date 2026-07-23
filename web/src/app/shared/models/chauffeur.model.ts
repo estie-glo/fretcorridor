@@ -24,5 +24,21 @@ export function parseChauffeurDetailResponse(response: unknown): ChauffeurDetail
 }
 
 export function getChauffeurDisplayLabel(chauffeur: ChauffeurSummary): string {
+  const nom = typeof chauffeur.raw['nom'] === 'string' ? chauffeur.raw['nom'].trim() : '';
+  const prenom = typeof chauffeur.raw['prenom'] === 'string' ? chauffeur.raw['prenom'].trim() : '';
+  const fullName = [prenom, nom].filter(Boolean).join(' ').trim();
+
+  if (fullName) {
+    return fullName;
+  }
+
   return getEntityDisplayLabel(chauffeur, CHAUFFEUR_LABEL_KEYS);
+}
+
+export function getChauffeurDisplayMeta(chauffeur: ChauffeurSummary): string {
+  const phone = typeof chauffeur.raw['telephone'] === 'string' ? chauffeur.raw['telephone'].trim() : '';
+  const badge = typeof chauffeur.raw['badgeKyc'] === 'string' ? chauffeur.raw['badgeKyc'].trim() : '';
+  const statut = typeof chauffeur.raw['statutKyc'] === 'string' ? chauffeur.raw['statutKyc'].trim() : '';
+
+  return phone || badge || statut || '';
 }

@@ -1,0 +1,179 @@
+<section class="fc-page">
+  <header class="fc-page__header">
+    <div>
+      <h1 class="fc-page__title">{{ 'MISSIONS.TITLE' | translate }}</h1>
+      <p class="fc-page__subtitle">{{ 'MISSIONS.SUBTITLE' | translate }}</p>
+    </div>
+    @if (!isLoadingList() && !listError()) {
+      <span class="fc-page__count">{{ missions().length }}</span>
+    }
+  </header>
+
+  <div class="fc-filters" role="search">
+    <label class="fc-filters__field">
+      <span class="fc-filters__label">{{ 'MISSIONS.FILTER_STATUT' | translate }}</span>
+      <select
+        class="fc-filters__select"
+        [value]="filterStatut()"
+        (change)="filterStatut.set($any($event.target).value); onFilterChange()"
+      >
+        <option value="">{{ 'MISSIONS.FILTER_ALL' | translate }}</option>
+        <option value="CAMION_VIDE_DECLARE">CAMION_VIDE_DECLARE</option>
+        <option value="MATCH_PROPOSE">MATCH_PROPOSE</option>
+        <option value="MISSION_ACCEPTEE">MISSION_ACCEPTEE</option>
+        <option value="EN_COURS">EN_COURS</option>
+        <option value="TERMINEE">TERMINEE</option>
+        <option value="ANNULEE">ANNULEE</option>
+      </select>
+    </label>
+
+    <label class="fc-filters__field">
+      <span class="fc-filters__label">{{ 'MISSIONS.FILTER_AXE' | translate }}</span>
+      <select
+        class="fc-filters__select"
+        [value]="filterAxeId()"
+        (change)="filterAxeId.set($any($event.target).value); onFilterChange()"
+      >
+        <option value="">{{ 'MISSIONS.FILTER_ALL' | translate }}</option>
+        @for (axe of axes(); track axe.id) {
+          <option [value]="axe.id">{{ getAxeLabel(axe) }}</option>
+        }
+      </select>
+    </label>
+  </div>
+
+  @if (selectedMissionId()) {
+    <app-mission-tracking-map
+      [tracking]="tracking()"
+      [isLoading]="isLoadingTracking()"
+      [hasError]="trackingError()"
+      [lastUpdatedAt]="trackingUpdatedAt()"
+    />
+  }
+
+  <div class="fc-split">
+    <aside class="fc-panel" aria-label="Liste missions">
+      @if (isLoadingList()) {
+        <div class="fc-skeleton" aria-busy="true" aria-live="polite">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
+      } @else if (listError()) {
+        <p class="fc-msg fc-msg--error" role="alert">{{ 'MISSIONS.ERROR_LIST' | translate }}</p>
+      } @else if (missions().length === 0) {
+        <div class="fc-empty">{{ 'MISSIONS.EMPTY' | translate }}</div>
+      } @else {
+        <ul class="fc-list">
+          @for (mission of missions(); track mission.id) {
+            <li>
+              <button
+                type="button"
+                class="fc-list__item"
+                [class.fc-list__item--active]="isSelected(mission.id)"
+                (click)="selectMission(mission.id)"
+              >
+                <span class="fc-list__label">{{ getMissionLabel(mission) }}</span>
+                <span class="fc-list__meta">
+                  @if (mission.statut) {
+                    <app-status-badge
+                      [label]="mission.statut"
+                      [variant]="missionStatusVariant(mission.statut)"
+                    />
+                  }
+                  @if (mission.chauffeurNom) {
+                    · {{ mission.chauffeurNom }}
+                  }
+                </span>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </aside>
+
+    <section class="fc-panel">
+      <h2 class="fc-panel__title">{{ 'MISSIONS.DETAIL_TITLE' | translate }}</h2>
+
+      @if (!selectedMissionId()) {
+        <div class="fc-empty">{{ 'MISSIONS.SELECT' | translate }}</div>
+      } @else if (isLoadingDetail()) {
+        <div class="fc-skeleton" aria-busy="true">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
+      } @else if (detailError()) {
+        <p class="fc-msg fc-msg--error" role="alert">{{ 'MISSIONS.ERROR_DETAIL' | translate }}</p>
+      } @else {
+        <div class="fc-actions fc-actions--stack-sm mission-actions" role="group" [attr.aria-label]="'MISSIONS.ACTIONS' | translate">
+          @if (canAccepter()) {
+            <button type="button" class="fc-btn fc-btn--primary fc-btn--sm" [disabled]="isTransitioning()" (click)="accepter()">
+              {{ 'MISSIONS.ACCEPT' | translate }}
+            </button>
+          }
+          @if (canDemarrer()) {
+            <button type="button" class="fc-btn fc-btn--primary fc-btn--sm" [disabled]="isTransitioning()" (click)="demarrer()">
+              {{ 'MISSIONS.START' | translate }}
+            </button>
+          }
+          @if (canTerminer()) {
+            <button type="button" class="fc-btn fc-btn--primary fc-btn--sm" [disabled]="isTransitioning()" (click)="terminer()">
+              {{ 'MISSIONS.COMPLETE' | translate }}
+            </button>
+          }
+          @if (canAnnuler()) {
+            <button type="button" class="fc-btn fc-btn--ghost fc-btn--sm" [disabled]="isTransitioning()" (click)="annuler()">
+              {{ 'MISSIONS.CANCEL' | translate }}
+            </button>
+          }
+        </div>
+
+        @if (actionError()) {
+          <p class="fc-msg fc-msg--error" role="alert">{{ 'MISSIONS.ERROR_ACTION' | translate }}</p>
+        }
+
+        @if (eta(); as etaInfo) {
+          <div class="mission-kpi" aria-live="polite">
+            <p class="mission-kpi__label">{{ 'MISSIONS.ETA_TITLE' | translate }}</p>
+            @if (etaInfo.statutCalcul === 'OK') {
+              <p class="mission-kpi__value">
+                {{ etaInfo.etaMinutes }} min · {{ etaInfo.distanceRestanteKm }} km
+              </p>
+            } @else {
+              <p class="mission-kpi__value">{{ etaInfo.statutCalcul || '—' }}</p>
+            }
+          </div>
+        }
+
+        @if (tracking(); as track) {
+          <div class="mission-kpi">
+            <p class="mission-kpi__label">{{ 'MISSIONS.TRACKING_TITLE' | translate }}</p>
+            <p class="mission-kpi__value">
+              {{ track.points.length }} {{ 'MISSIONS.TRACKING_POINTS' | translate }}
+              @if (track.zoneSensible) {
+                · {{ 'MISSIONS.ZONE_SENSIBLE' | translate }}
+              }
+            </p>
+            @if (track.lastPosition; as last) {
+              <p class="mission-kpi__meta">{{ last.latitude }}, {{ last.longitude }}</p>
+            }
+          </div>
+        }
+
+        @if (detailEntries().length === 0) {
+          <div class="fc-empty">{{ 'MISSIONS.EMPTY_DETAIL' | translate }}</div>
+        } @else {
+          <dl class="fc-dl">
+            @for (entry of detailEntries(); track entry.key) {
+              <div class="fc-dl__row">
+                <dt>{{ entry.key }}</dt>
+                <dd>{{ entry.value }}</dd>
+              </div>
+            }
+          </dl>
+        }
+      }
+    </section>
+  </div>
+</section>

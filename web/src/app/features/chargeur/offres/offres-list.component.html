@@ -1,0 +1,72 @@
+<section class="fc-page">
+  <header class="fc-page__header">
+    <div>
+      <h1 class="fc-page__title">{{ 'CHARGEUR.OFFRES_TITLE' | translate }}</h1>
+      <p class="fc-page__subtitle">{{ 'CHARGEUR.OFFRES_SUBTITLE' | translate }}</p>
+    </div>
+    @if (!isLoadingList() && !listError()) {
+      <span class="fc-page__count">{{ offres().length }}</span>
+    }
+  </header>
+
+  <div class="fc-split">
+    <aside class="fc-panel" [attr.aria-label]="'CHARGEUR.OFFRES_LIST_LABEL' | translate">
+      @if (isLoadingList()) {
+        <div class="fc-skeleton" aria-busy="true" aria-live="polite">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
+      } @else if (listError()) {
+        <p class="fc-msg fc-msg--error" role="alert">{{ 'CHARGEUR.OFFRES_ERROR_LIST' | translate }}</p>
+      } @else if (offres().length === 0) {
+        <div class="fc-empty">{{ 'CHARGEUR.OFFRES_EMPTY' | translate }}</div>
+      } @else {
+        <ul class="fc-list">
+          @for (offre of offres(); track offre.id) {
+            <li>
+              <button
+                type="button"
+                class="fc-list__item"
+                [class.fc-list__item--active]="isSelected(offre.id)"
+                (click)="selectOffre(offre.id)"
+              >
+                <span class="fc-list__label">{{ getOffreLabel(offre) }}</span>
+                @if (getOffreMeta(offre); as meta) {
+                  <span class="fc-list__meta">{{ meta }}</span>
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </aside>
+
+    <section class="fc-panel">
+      <h2 class="fc-panel__title">{{ 'CHARGEUR.OFFRES_DETAIL_TITLE' | translate }}</h2>
+
+      @if (!selectedOffreId()) {
+        <div class="fc-empty">{{ 'CHARGEUR.OFFRES_SELECT' | translate }}</div>
+      } @else if (isLoadingDetail()) {
+        <div class="fc-skeleton" aria-busy="true">
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+          <div class="fc-skeleton__line"></div>
+        </div>
+      } @else if (detailError()) {
+        <p class="fc-msg fc-msg--error" role="alert">{{ 'CHARGEUR.OFFRES_ERROR_DETAIL' | translate }}</p>
+      } @else if (detailEntries().length === 0) {
+        <div class="fc-empty">{{ 'CHARGEUR.OFFRES_EMPTY_DETAIL' | translate }}</div>
+      } @else {
+        <dl class="fc-dl">
+          @for (entry of detailEntries(); track entry.key) {
+            <div class="fc-dl__row">
+              <dt>{{ entry.key }}</dt>
+              <dd>{{ entry.value }}</dd>
+            </div>
+          }
+        </dl>
+      }
+    </section>
+  </div>
+</section>

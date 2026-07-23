@@ -30,7 +30,7 @@ const LANG_STORAGE_KEY = 'fc_lang';
     .lang-switcher {
       display: inline-flex;
       border: 1px solid var(--fc-border);
-      border-radius: 999px;
+      border-radius: var(--fc-radius-sm);
       overflow: hidden;
       background: var(--fc-surface);
     }
@@ -40,12 +40,14 @@ const LANG_STORAGE_KEY = 'fc_lang';
       background: transparent;
       color: var(--fc-muted);
       font: inherit;
-      font-size: 0.75rem;
-      font-weight: 600;
+      font-size: 0.6875rem;
+      font-weight: 700;
       letter-spacing: 0.04em;
-      padding: 0.35rem 0.75rem;
+      padding: 0.4rem 0.65rem;
       cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease;
+      transition:
+        background var(--fc-duration) var(--fc-ease),
+        color var(--fc-duration) var(--fc-ease);
     }
 
     .lang-switcher__btn--active {
@@ -55,7 +57,7 @@ const LANG_STORAGE_KEY = 'fc_lang';
 
     .lang-switcher__btn:not(.lang-switcher__btn--active):hover {
       color: var(--fc-text);
-      background: color-mix(in srgb, var(--fc-primary) 8%, transparent);
+      background: var(--fc-bg);
     }
   `,
 })

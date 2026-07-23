@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+.notif-item--unread .fc-list__label {
+  font-weight: 700;
+  color: var(--fc-text);
+}
+
+.notif-detail__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--fc-text);
+}
+
+.notif-detail__body {
+  margin: 0 0 var(--fc-space-4);
+  color: var(--fc-muted);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}

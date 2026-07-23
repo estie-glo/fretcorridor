@@ -1,8 +1,9 @@
-import { TenantConfig } from './tenant-config.model';
+import type { TenantConfig } from './tenant-config.model';
 
 export interface LoginRequest {
   telephone: string;
-  pin: string;
+  /** Aligné sur le backend (`codePin`). */
+  codePin: string;
 }
 
 export interface AuthResponse {
@@ -15,4 +16,21 @@ export interface AuthResponse {
 
 export interface RefreshRequest {
   refreshToken: string;
+}
+
+export interface AuthErrorResponse {
+  code?: string;
+  message?: string;
+  tentativesRestantes?: number;
+}
+
+export class AuthError extends Error {
+  constructor(
+    readonly code: string,
+    message?: string,
+    readonly tentativesRestantes?: number,
+  ) {
+    super(message ?? code);
+    this.name = 'AuthError';
+  }
 }

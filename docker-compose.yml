@@ -1,8 +1,8 @@
-version: '3.8'
+# Lancement complet : docker compose up --build
+# → Web http://localhost:4200 · API http://localhost:8080 · MinIO console http://localhost:9001
 
 services:
 
-  # ── PostgreSQL ──────────────────────────────────────────────
   postgres:
     image: postgres:16
     container_name: fretcorridor-postgres
@@ -14,9 +14,13 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fretcorridor -d fretcorridor"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     restart: unless-stopped
 
-  # ── Redis ───────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
     container_name: fretcorridor-redis
@@ -24,5 +28,53 @@ services:
       - "6379:6379"
     restart: unless-stopped
 
+  minio:
+    image: minio/minio:latest
+    container_name: fretcorridor-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: fretcorridor
+      MINIO_ROOT_PASSWORD: fretcorridor123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fretcorridor-backend
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JWT_SECRET: ${JWT_SECRET:-fretcorridor-dev-jwt-secret-change-in-production-2026}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-fretcorridor123}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-fretcorridor}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-fretcorridor123}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      minio:
+        condition: service_started
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: fretcorridor-web
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  minio_data:

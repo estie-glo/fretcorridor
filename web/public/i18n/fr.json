@@ -12,11 +12,47 @@
     "LOGOUT": "Se déconnecter",
     "LOADING": "Connexion en cours…",
     "ERROR_INVALID": "Identifiants incorrects. Vérifiez votre téléphone et votre PIN.",
-    "ERROR_GENERIC": "Connexion impossible. Réessayez plus tard."
+    "ERROR_GENERIC": "Connexion impossible. Réessayez plus tard.",
+    "ERROR_UNKNOWN_USER": "Numéro non reconnu. Contactez votre agent.",
+    "ERROR_PIN_INCORRECT": "PIN incorrect. Vérifiez votre code.",
+    "ERROR_PIN_LAST_ATTEMPT": "PIN incorrect. Dernière tentative avant blocage.",
+    "ERROR_ACCOUNT_LOCKED": "Compte bloqué après 3 tentatives. Contactez votre agent.",
+    "ERROR_ACCOUNT_DISABLED": "Compte désactivé. Contactez votre agent.",
+    "ERROR_RATE_LIMIT": "Trop de tentatives. Réessayez dans une minute.",
+    "ERROR_VALIDATION": "Format téléphone ou PIN invalide.",
+    "PREVIEW_TITLE": "Suivez vos corridors en temps réel",
+    "SHOWCASE_1_TITLE": "Carte & corridors en direct",
+    "SHOWCASE_1_SUBTITLE": "Visualisez hubs, axes et états d'activation sur le réseau CEMAC.",
+    "SHOWCASE_2_TITLE": "Missions & offres fret",
+    "SHOWCASE_2_SUBTITLE": "Déclarez un camion vide, acceptez une mission et suivez le cycle complet A→Z.",
+    "SHOWCASE_3_TITLE": "Confiance & conformité",
+    "SHOWCASE_3_SUBTITLE": "KYC multi-niveaux, notifications et journal d'audit pour sécuriser vos opérations.",
+    "DEMO_ACCOUNTS": "Comptes démo",
+    "DEMO_AGENT": "Agent bureau (Cameroun)",
+    "DEMO_BUREAU_TCHAD": "Bureau BNFT Tchad",
+    "DEMO_OPERATEUR": "Opérateur admin",
+    "DEMO_CHARGEUR": "Chargeur"
   },
   "HOME": {
     "WELCOME": "Bienvenue",
-    "PLACEHOLDER": "Tableau de bord à venir."
+    "PLACEHOLDER": "Tableau de bord opérationnel."
+  },
+  "DASHBOARD": {
+    "TITLE": "Tableau de bord",
+    "SUBTITLE": "Vue synthèse corridor — KPI et répartition en temps réel.",
+    "ERROR": "Impossible de charger le tableau de bord.",
+    "CHART_MISSIONS": "Missions par statut",
+    "CHART_AXES": "Axes par état",
+    "KPI_AXES_ACTIFS": "Axes actifs",
+    "KPI_AXES_VERROUILLES": "Axes verrouillés",
+    "KPI_MISSIONS_EN_COURS": "Missions en cours",
+    "KPI_OFFRES_VIDES": "Camions vides",
+    "KPI_NOTIFS": "Notifications non lues",
+    "KPI_KYC_PENDING": "KYC en attente",
+    "KPI_CHAUFFEURS": "Chauffeurs",
+    "KPI_MISSIONS_ACTIVES": "Missions actives",
+    "KPI_AUDIT": "Entrées audit",
+    "KPI_OFFRES_DISPONIBLES": "Offres disponibles"
   },
   "AXES": {
     "TITLE": "Axes corridor",
@@ -28,7 +64,16 @@
     "EMPTY": "Aucun axe disponible pour le moment.",
     "EMPTY_STATUT": "Aucune donnée de statut pour cet axe.",
     "SELECT_AXE": "Sélectionnez un axe pour afficher son statut.",
-    "STATUT_TITLE": "Statut de l'axe"
+    "STATUT_TITLE": "Statut de l'axe",
+    "MAP_TITLE": "Carte du réseau",
+    "MAP_LEGEND": "Légende des états d'activation",
+    "MAP_LOADING": "Chargement de la carte…",
+    "MAP_ERROR": "Impossible de charger la carte des corridors.",
+    "MAP_EMPTY": "Aucun hub ni corridor géolocalisé à afficher.",
+    "MAP_ZONE_SENSIBLE": "Zone sensible",
+    "ETAT_ACTIF": "Actif",
+    "ETAT_VERROUILLE": "Verrouillé",
+    "ETAT_INACTIF": "Inactif"
   },
   "CHARGEUR": {
     "TITLE": "Visibilité distribution",
@@ -40,32 +85,49 @@
     "EMPTY": "Aucun axe de distribution disponible.",
     "EMPTY_STATUT": "Aucune donnée de statut pour cet axe.",
     "SELECT_AXE": "Sélectionnez un axe pour consulter son statut.",
-    "STATUT_TITLE": "Statut distribution"
+    "STATUT_TITLE": "Statut distribution",
+    "OFFRES_TITLE": "Offres camion vide",
+    "OFFRES_SUBTITLE": "Camions déclarés vides disponibles sur vos axes.",
+    "OFFRES_LIST_LABEL": "Liste des offres",
+    "OFFRES_ERROR_LIST": "Impossible de charger les offres.",
+    "OFFRES_EMPTY": "Aucune offre camion vide pour le moment.",
+    "OFFRES_SELECT": "Sélectionnez une offre pour afficher le détail.",
+    "OFFRES_DETAIL_TITLE": "Détail de l'offre",
+    "OFFRES_ERROR_DETAIL": "Impossible de charger le détail de cette offre.",
+    "OFFRES_EMPTY_DETAIL": "Aucune donnée détaillée pour cette offre."
   },
   "NAV": {
     "LABEL": "Navigation principale",
+    "DASHBOARD": "Accueil",
     "BUREAU_AXES": "Axes corridor",
-    "CHARGEUR_DISTRIBUTION": "Distribution"
+    "BUREAU_MISSIONS": "Missions",
+    "CHARGEUR_DISTRIBUTION": "Distribution",
+    "CHARGEUR_OFFRES": "Offres",
+    "NOTIFICATIONS": "Notifications"
   },
   "ADMIN": {
     "TITLE": "Administration",
     "SUBTITLE": "Back-office FretCorridor — validation et référentiels.",
     "NAV_LABEL": "Navigation administration",
     "KYC_NAV": "KYC en attente",
-    "CHAUFFEURS_NAV": "Chauffeurs"
+    "CHAUFFEURS_NAV": "Chauffeurs",
+    "AUDIT_NAV": "Journal d'audit"
   },
   "KYC": {
     "TITLE": "Dossiers KYC en attente",
-    "SUBTITLE": "Vérifiez et validez les dossiers soumis.",
+    "SUBTITLE": "Vérifiez et validez les dossiers (niveau 1 identité, niveau 2 justificatifs).",
     "LOADING": "Chargement des dossiers…",
     "ERROR_LIST": "Impossible de charger les dossiers KYC.",
     "EMPTY": "Aucun dossier KYC en attente.",
     "SELECT": "Sélectionnez un dossier pour afficher le détail.",
     "DETAIL_TITLE": "Détail du dossier",
     "VALIDATE": "Valider le dossier",
+    "VALIDATE_N1": "Valider niveau 1",
+    "VALIDATE_N2": "Valider niveau 2",
     "VALIDATING": "Validation en cours…",
     "VALIDATE_SUCCESS": "Dossier validé avec succès.",
-    "VALIDATE_ERROR": "Impossible de valider ce dossier."
+    "VALIDATE_ERROR": "Impossible de valider ce dossier.",
+    "DOCS_MISSING": "Niveau 2 impossible : CNI et permis requis (MinIO)."
   },
   "CHAUFFEURS": {
     "TITLE": "Chauffeurs",
@@ -79,8 +141,68 @@
     "SELECT": "Sélectionnez un chauffeur pour afficher le détail.",
     "DETAIL_TITLE": "Fiche chauffeur"
   },
+  "MISSIONS": {
+    "TITLE": "Missions corridor",
+    "SUBTITLE": "Supervision des missions et suivi GPS du tenant.",
+    "LOADING_LIST": "Chargement des missions…",
+    "LOADING_DETAIL": "Chargement du détail…",
+    "ERROR_LIST": "Impossible de charger la liste des missions.",
+    "ERROR_DETAIL": "Impossible de charger le détail de cette mission.",
+    "ERROR_ACTION": "Transition de statut impossible.",
+    "ACTION_SUCCESS": "Mission mise à jour avec succès.",
+    "FILTER_STATUT": "Statut",
+    "FILTER_AXE": "Axe",
+    "FILTER_ALL": "Tous",
+    "EMPTY": "Aucune mission pour le moment.",
+    "EMPTY_DETAIL": "Aucune donnée détaillée pour cette mission.",
+    "SELECT": "Sélectionnez une mission pour afficher le détail.",
+    "DETAIL_TITLE": "Détail mission",
+    "ACTIONS": "Actions mission",
+    "ACCEPT": "Accepter",
+    "START": "Démarrer",
+    "COMPLETE": "Terminer",
+    "CANCEL": "Annuler",
+    "ETA_TITLE": "ETA estimée",
+    "TRACKING_TITLE": "Tracking",
+    "TRACKING_POINTS": "points GPS",
+    "ZONE_SENSIBLE": "Zone sensible",
+    "MAP_TITLE": "Suivi sur carte",
+    "MAP_POSITION": "Position courante",
+    "MAP_UPDATED": "Dernière maj",
+    "MAP_LOADING": "Chargement du suivi…",
+    "MAP_ERROR": "Impossible de charger le suivi GPS.",
+    "MAP_EMPTY": "Aucune position GPS à afficher pour cette mission."
+  },
   "LANG": {
     "FR": "Français",
     "EN": "English"
+  },
+  "NOTIF": {
+    "TITLE": "Notifications",
+    "SUBTITLE": "Alertes mission et messages opérationnels (IN_APP · canaux externes en stub).",
+    "LIST_LABEL": "Liste des notifications",
+    "DETAIL_TITLE": "Détail",
+    "SELECT": "Sélectionnez une notification.",
+    "EMPTY": "Aucune notification pour le moment.",
+    "ERROR": "Impossible de charger les notifications.",
+    "UNREAD": "Non lues",
+    "FIELD_TYPE": "Type",
+    "FIELD_CANAL": "Canal",
+    "FIELD_STATUS": "Statut d'envoi",
+    "FIELD_DATE": "Date"
+  },
+  "AUDIT": {
+    "TITLE": "Journal d'audit",
+    "SUBTITLE": "Trace append-only des actions sensibles (KYC, axes, missions).",
+    "LIST_LABEL": "Entrées d'audit",
+    "DETAIL_TITLE": "Détail",
+    "SELECT": "Sélectionnez une entrée.",
+    "EMPTY": "Aucune entrée d'audit pour le moment.",
+    "ERROR": "Impossible de charger le journal d'audit.",
+    "FIELD_ACTOR": "Acteur",
+    "FIELD_RESOURCE": "Ressource",
+    "FIELD_CHANGE": "Modification",
+    "BEFORE": "Avant",
+    "AFTER": "Après"
   }
 }

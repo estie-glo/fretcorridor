@@ -32,24 +32,26 @@ import { BRAND_LOGO_ALT, BRAND_LOGO_CANDIDATES } from '../../brand/brand.constan
     .brand-logo {
       display: block;
       width: auto;
+      max-width: 100%;
       object-fit: contain;
     }
 
     .brand-logo--sm {
-      height: 1.75rem;
+      height: 2rem;
     }
 
     .brand-logo--md {
-      height: 2.25rem;
+      height: 2.5rem;
     }
 
     .brand-logo--lg {
-      height: 3.25rem;
+      height: 3.75rem;
     }
 
     .brand-logo__fallback {
       display: inline-block;
-      font-weight: 700;
+      font-weight: 800;
+      font-style: italic;
       letter-spacing: -0.03em;
       color: var(--fc-text);
       line-height: 1;

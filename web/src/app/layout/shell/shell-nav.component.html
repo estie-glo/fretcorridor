@@ -1,0 +1,19 @@
+@if (navItems().length > 0) {
+  <nav class="shell-nav" [attr.aria-label]="'NAV.LABEL' | translate">
+    @for (item of navItems(); track item.path) {
+      <a
+        class="shell-nav__link"
+        routerLinkActive="shell-nav__link--active"
+        [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+        [routerLink]="item.path"
+      >
+        {{ item.labelKey | translate }}
+        @if (item.badge && item.badge > 0) {
+          <span class="shell-nav__badge" [attr.aria-label]="'NOTIF.UNREAD' | translate">
+            {{ item.badge > 99 ? '99+' : item.badge }}
+          </span>
+        }
+      </a>
+    }
+  </nav>
+}

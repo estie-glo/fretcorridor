@@ -1,9 +1,15 @@
 import { computed, Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { AuthResponse, LoginRequest, RefreshRequest } from '../../shared/models/auth.dto';
+import {
+  AuthError,
+  AuthErrorResponse,
+  AuthResponse,
+  LoginRequest,
+  RefreshRequest,
+} from '../../shared/models/auth.dto';
 import { TenantConfig } from '../../shared/models/tenant-config.model';
 import {
   getHomeRouteForRole,
@@ -50,11 +56,13 @@ export class AuthService {
     this.isLoading.set(true);
 
     try {
-      const payload: LoginRequest = { telephone, pin };
+      const payload: LoginRequest = { telephone, codePin: pin };
       const response = await firstValueFrom(
         this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, payload),
       );
       this.applyAuthResponse(response);
+    } catch (error) {
+      throw this.toAuthError(error);
     } finally {
       this.isLoading.set(false);
     }
@@ -150,5 +158,15 @@ export class AuthService {
 
   hasRole(allowedRoles: UserRole[]): boolean {
     return allowedRoles.includes(this.normalizedRole());
+  }
+
+  private toAuthError(error: unknown): AuthError {
+    if (error instanceof HttpErrorResponse) {
+      const body = error.error as AuthErrorResponse | null;
+      const code = body?.code ?? 'ERREUR_INTERNE';
+      return new AuthError(code, body?.message, body?.tentativesRestantes);
+    }
+
+    return new AuthError('ERREUR_INTERNE');
   }
 }
