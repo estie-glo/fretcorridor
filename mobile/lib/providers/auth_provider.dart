@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import '../services/auth_service.dart';
 import '../models/utilisateur_model.dart';
 import 'dio_provider.dart';
