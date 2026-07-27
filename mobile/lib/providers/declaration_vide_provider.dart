@@ -55,11 +55,13 @@ class DeclarationVideNotifier extends StateNotifier<DeclarationVideState> {
   }
 
   // ── Déclarer un camion vide (offline-first) ───────────────
+  // EF-MKT-01 : disponibleDe optionnel — null = disponible immédiatement
   Future<bool> declarer({
     required String axeId,
     required String axeNom,
     required String typeCamion,
     required double capaciteTonnes,
+    DateTime? disponibleDe,
   }) async {
     state = state.copyWith(positionEnCours: true, erreur: null, succes: null);
 
@@ -81,6 +83,7 @@ class DeclarationVideNotifier extends StateNotifier<DeclarationVideState> {
       typeCamion: typeCamion,
       capaciteTonnes: capaciteTonnes,
       dateCreation: DateTime.now(),
+      disponibleDe: disponibleDe,
     );
 
     // Sauvegarde locale immédiate — jamais de perte de donnée (ENF-OFF-01)
@@ -103,6 +106,62 @@ class DeclarationVideNotifier extends StateNotifier<DeclarationVideState> {
     return true;
   }
 
+  // ── Modifier une déclaration déjà synchronisée ─────────────
+  // (le back-end refuse si elle a déjà un match — MODIFICATION_IMPOSSIBLE_STATUT_*)
+  Future<bool> modifier({
+    required String idLocal,
+    required String? missionId,
+    String? typeCamion,
+    double? capaciteTonnes,
+    DateTime? disponibleDe,
+  }) async {
+    if (missionId == null) {
+      state = state.copyWith(
+        erreur: 'Cette déclaration n\'est pas encore synchronisée avec le serveur.',
+      );
+      return false;
+    }
+    try {
+      await _dio.put('/missions/mes-declarations/$missionId', data: {
+        if (typeCamion != null) 'typeCamion': typeCamion,
+        if (capaciteTonnes != null) 'capaciteTonnes': capaciteTonnes,
+        if (disponibleDe != null) 'disponibleDe': disponibleDe.toIso8601String(),
+      });
+      await DeclarationLocalDb.mettreAJour(
+        idLocal,
+        typeCamion: typeCamion,
+        capaciteTonnes: capaciteTonnes,
+        disponibleDe: disponibleDe,
+      );
+      state = state.copyWith(succes: 'Déclaration modifiée ✅');
+      await _chargerLocal();
+      return true;
+    } on DioException catch (e) {
+      state = state.copyWith(
+        erreur: 'Modification impossible : ${e.response?.data ?? e.message}',
+      );
+      return false;
+    }
+  }
+
+  // ── Supprimer une déclaration ──────────────────────────────
+  Future<bool> supprimer({required String idLocal, required String? missionId}) async {
+    if (missionId != null) {
+      try {
+        await _dio.delete('/missions/mes-declarations/$missionId');
+      } on DioException catch (e) {
+        state = state.copyWith(
+          erreur: 'Suppression impossible : ${e.response?.data ?? e.message}',
+        );
+        return false;
+      }
+    }
+    await DeclarationLocalDb.supprimer(idLocal);
+    state = state.copyWith(succes: 'Déclaration supprimée 🗑️');
+    await _chargerLocal();
+    return true;
+  }
+
   // ── Envoi au serveur avec idempotence ─────────────────────
   Future<bool> _envoyerAuServeur(DeclarationVideModel d) async {
     try {
@@ -113,6 +172,7 @@ class DeclarationVideNotifier extends StateNotifier<DeclarationVideState> {
           'longitude': d.longitude,
           'typeCamion': d.typeCamion,
           'capaciteTonnes': d.capaciteTonnes,
+          if (d.disponibleDe != null) 'disponibleDe': d.disponibleDe!.toIso8601String(),
         },
         options: Options(headers: {'X-Idempotency-Key': d.idLocal}),
       );

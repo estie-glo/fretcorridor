@@ -44,6 +44,10 @@ public class Mission {
     @Column(nullable = false)
     private Double capaciteTonnes;
 
+    // EF-MKT-01 : disponibilité déclarée par le chauffeur
+    @Column
+    private LocalDateTime disponibleDe;
+
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private StatutMission statut = StatutMission.CAMION_VIDE_DECLARE;
