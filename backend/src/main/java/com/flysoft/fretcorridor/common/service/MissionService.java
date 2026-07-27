@@ -63,6 +63,9 @@ public class MissionService {
                 .longitude(request.getLongitude())
                 .typeCamion(request.getTypeCamion())
                 .capaciteTonnes(request.getCapaciteTonnes())
+                .disponibleDe(request.getDisponibleDe() != null
+                        ? request.getDisponibleDe()
+                        : java.time.LocalDateTime.now())
                 .tenantId(tenantId)
                 .build();
 
@@ -229,5 +232,90 @@ public class MissionService {
         }
 
         return MissionDto.MissionResponse.fromEntity(saved);
+    }
+
+    // ── Mes déclarations (chauffeur connecté, mobile) ─────────
+    @Transactional(readOnly = true)
+    public List<MissionDto.MissionResponse> getMesDeclarations(
+            UUID chauffeurUtilisateurId, String tenantId) {
+        Chauffeur chauffeur = chauffeurRepository.findByUtilisateurId(chauffeurUtilisateurId)
+                .orElseThrow(() -> new RuntimeException("CHAUFFEUR_INTROUVABLE"));
+        return missionRepository.findByChauffeurIdAndTenantId(chauffeur.getId(), tenantId).stream()
+                .map(MissionDto.MissionResponse::fromEntity)
+                .toList();
+    }
+
+    // ── Détail d'une déclaration (chauffeur propriétaire) ──────
+    @Transactional(readOnly = true)
+    public MissionDto.MissionResponse getDetail(
+            UUID missionId, UUID chauffeurUtilisateurId, String tenantId) {
+        Mission mission = trouverEtVerifierProprietaire(missionId, chauffeurUtilisateurId, tenantId);
+        return MissionDto.MissionResponse.fromEntity(mission);
+    }
+
+    // ── Modifier une déclaration (tant qu'elle n'a pas de match) ──
+    @Transactional
+    public MissionDto.MissionResponse modifier(
+            UUID missionId, MissionDto.UpdateRequest request,
+            UUID chauffeurUtilisateurId, String tenantId) {
+
+        Mission mission = trouverEtVerifierProprietaire(missionId, chauffeurUtilisateurId, tenantId);
+
+        if (mission.getStatut() != Mission.StatutMission.CAMION_VIDE_DECLARE) {
+            throw new RuntimeException("MODIFICATION_IMPOSSIBLE_STATUT_" + mission.getStatut());
+        }
+
+        if (request.getTypeCamion() != null && !request.getTypeCamion().isBlank()) {
+            mission.setTypeCamion(request.getTypeCamion());
+        }
+        if (request.getCapaciteTonnes() != null && request.getCapaciteTonnes() > 0) {
+            mission.setCapaciteTonnes(request.getCapaciteTonnes());
+        }
+        if (request.getDisponibleDe() != null) {
+            mission.setDisponibleDe(request.getDisponibleDe());
+        }
+
+        Mission saved = missionRepository.save(mission);
+
+        journalAuditService.enregistrer(
+                tenantId, chauffeurUtilisateurId, "CHAUFFEUR",
+                "DECLARATION_MODIFIER", "MISSION", missionId,
+                null, saved.getStatut().name());
+
+        return MissionDto.MissionResponse.fromEntity(saved);
+    }
+
+    // ── Supprimer une déclaration (suppression logique) ─────────
+    @Transactional
+    public void supprimer(UUID missionId, UUID chauffeurUtilisateurId, String tenantId) {
+        Mission mission = trouverEtVerifierProprietaire(missionId, chauffeurUtilisateurId, tenantId);
+
+        if (mission.getStatut() != Mission.StatutMission.CAMION_VIDE_DECLARE) {
+            throw new RuntimeException("SUPPRESSION_IMPOSSIBLE_STATUT_" + mission.getStatut());
+        }
+
+        String avant = mission.getStatut().name();
+        mission.setStatut(Mission.StatutMission.ANNULEE);
+        missionRepository.save(mission);
+
+        journalAuditService.enregistrer(
+                tenantId, chauffeurUtilisateurId, "CHAUFFEUR",
+                "DECLARATION_SUPPRIMER", "MISSION", missionId,
+                avant, Mission.StatutMission.ANNULEE.name());
+    }
+
+    private Mission trouverEtVerifierProprietaire(
+            UUID missionId, UUID chauffeurUtilisateurId, String tenantId) {
+        Mission mission = missionRepository.findByIdAndTenantId(missionId, tenantId)
+                .orElseThrow(() -> new RuntimeException("MISSION_INTROUVABLE"));
+
+        Chauffeur chauffeur = chauffeurRepository.findByUtilisateurId(chauffeurUtilisateurId)
+                .orElseThrow(() -> new RuntimeException("CHAUFFEUR_INTROUVABLE"));
+
+        if (!mission.getChauffeur().getId().equals(chauffeur.getId())) {
+            throw new RuntimeException("MISSION_INTROUVABLE"); // pas la sienne → pas de fuite d'info
+        }
+
+        return mission;
     }
 }

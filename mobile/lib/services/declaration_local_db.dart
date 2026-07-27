@@ -16,7 +16,7 @@ class DeclarationLocalDb {
     final path = join(await getDatabasesPath(), 'fretcorridor_local.db');
     return openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE declarations_vide (
@@ -29,7 +29,8 @@ class DeclarationLocalDb {
             capacite_tonnes REAL,
             date_creation TEXT,
             synchronise INTEGER,
-            mission_id TEXT
+            mission_id TEXT,
+            disponible_de TEXT
           )
         ''');
         await _createPositionsTable(db);
@@ -39,6 +40,10 @@ class DeclarationLocalDb {
           await db.execute(
               'ALTER TABLE declarations_vide ADD COLUMN mission_id TEXT');
           await _createPositionsTable(db);
+        }
+        if (oldVersion < 3) {
+          await db.execute(
+              'ALTER TABLE declarations_vide ADD COLUMN disponible_de TEXT');
         }
       },
     );
@@ -73,6 +78,29 @@ class DeclarationLocalDb {
     }
     await db.update('declarations_vide', data,
         where: 'id_local = ?', whereArgs: [idLocal]);
+  }
+
+  // ── Modifier une déclaration locale après édition serveur ──
+  static Future<void> mettreAJour(
+    String idLocal, {
+    String? typeCamion,
+    double? capaciteTonnes,
+    DateTime? disponibleDe,
+  }) async {
+    final db = await database;
+    final data = <String, Object>{};
+    if (typeCamion != null) data['type_camion'] = typeCamion;
+    if (capaciteTonnes != null) data['capacite_tonnes'] = capaciteTonnes;
+    if (disponibleDe != null) data['disponible_de'] = disponibleDe.toIso8601String();
+    if (data.isEmpty) return;
+    await db.update('declarations_vide', data,
+        where: 'id_local = ?', whereArgs: [idLocal]);
+  }
+
+  // ── Supprimer une déclaration locale ───────────────────────
+  static Future<void> supprimer(String idLocal) async {
+    final db = await database;
+    await db.delete('declarations_vide', where: 'id_local = ?', whereArgs: [idLocal]);
   }
 
   static Future<String?> derniereMissionIdSynchronisee() async {

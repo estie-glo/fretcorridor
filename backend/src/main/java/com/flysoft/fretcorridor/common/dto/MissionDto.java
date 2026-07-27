@@ -25,6 +25,17 @@ public class MissionDto {
         @NotNull(message = "capaciteTonnes obligatoire")
         @Positive(message = "capaciteTonnes doit être positive")
         private Double capaciteTonnes;
+
+        // EF-MKT-01 : optionnel — si absent, "disponible immédiatement"
+        private LocalDateTime disponibleDe;
+    }
+
+    // ── Modification d'une déclaration existante (chauffeur, mobile) ──
+    @Data
+    public static class UpdateRequest {
+        private String typeCamion;       // optionnel : ne change que si fourni
+        private Double capaciteTonnes;   // optionnel
+        private LocalDateTime disponibleDe;   // optionnel
     }
 
     @Data
@@ -44,6 +55,7 @@ public class MissionDto {
         private String statut;
         private boolean zoneSensible;
         private LocalDateTime dateDeclaration;
+        private LocalDateTime disponibleDe;
 
         public static MissionResponse fromEntity(Mission m) {
             String chauffeurNom = null;
@@ -65,6 +77,7 @@ public class MissionDto {
                     .statut(m.getStatut().name())
                     .zoneSensible(m.getAxe() != null && m.getAxe().isZoneSensible())
                     .dateDeclaration(m.getDateDeclaration())
+                    .disponibleDe(m.getDisponibleDe())
                     .build();
         }
     }

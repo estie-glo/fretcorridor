@@ -51,4 +51,62 @@ public class MissionController {
         String tenantId = jwtService.extraireTenantId(token);
         return ResponseEntity.ok(missionService.getMatchsDisponibles(tenantId));
     }
+
+    // ── GET /api/missions/mes-declarations ────────────────────
+    @GetMapping("/mes-declarations")
+    public ResponseEntity<?> getMesDeclarations(@RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            UUID utilisateurId = jwtService.extraireUserId(token);
+            String tenantId = jwtService.extraireTenantId(token);
+            return ResponseEntity.ok(missionService.getMesDeclarations(utilisateurId, tenantId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // ── GET /api/missions/{id} — détail d'une déclaration ─────
+    @GetMapping("/mes-declarations/{id}")
+    public ResponseEntity<?> getDetail(
+            @PathVariable UUID id, @RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            UUID utilisateurId = jwtService.extraireUserId(token);
+            String tenantId = jwtService.extraireTenantId(token);
+            return ResponseEntity.ok(missionService.getDetail(id, utilisateurId, tenantId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // ── PUT /api/missions/{id} — modifier une déclaration ─────
+    @PutMapping("/mes-declarations/{id}")
+    public ResponseEntity<?> modifier(
+            @PathVariable UUID id,
+            @RequestBody MissionDto.UpdateRequest request,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            UUID utilisateurId = jwtService.extraireUserId(token);
+            String tenantId = jwtService.extraireTenantId(token);
+            return ResponseEntity.ok(missionService.modifier(id, request, utilisateurId, tenantId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // ── DELETE /api/missions/{id} — supprimer une déclaration ─
+    @DeleteMapping("/mes-declarations/{id}")
+    public ResponseEntity<?> supprimer(
+            @PathVariable UUID id, @RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            UUID utilisateurId = jwtService.extraireUserId(token);
+            String tenantId = jwtService.extraireTenantId(token);
+            missionService.supprimer(id, utilisateurId, tenantId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
