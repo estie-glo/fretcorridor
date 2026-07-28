@@ -1,8 +1,8 @@
 # Analyse comparative & gouvernance monorepo — web / mobile / shared
 
-> **Date :** 2026-07-22 (màj. périmètres : 2026-07-23)  
+> **Date :** 2026-07-22 (màj. : 2026-07-28 — branches `web`/`mobile`/`dev`, CRUD déclarations, S5 positions)  
 > **Objectif :** documenter l'organisation du dépôt (annexes mobile vs monorepo), les frontières API entre clients, et le plan d'intégration pour une **démo coordonnée** sans conflits Git.  
-> **Références :** [`backend-structure.md`](./backend-structure.md), [`ROADMAP.md`](./ROADMAP.md)
+> **Références :** [`backend-structure.md`](./backend-structure.md), [`ROADMAP.md`](./ROADMAP.md), [`CONTEXT.md`](./CONTEXT.md), [`guide-demarrage-mobile-apres-merge-dev.md`](./guide-demarrage-mobile-apres-merge-dev.md)
 
 ---
 
@@ -60,6 +60,7 @@ Le dossier `annexes/fretcorridor/` est une **archive de référence** (Sprint 1�
 | Enrôlement / KYC terrain | `POST/GET /chauffeurs`, `POST /kyc/documents`, `GET /chauffeurs/me` | `mobile` |
 | Modération KYC agent | `GET/PUT /admin/kyc/*` | `web` *(même URL, rôle AGENT)* |
 | Déclaration vide | `POST /missions/declare-vide` | `mobile` |
+| Mes déclarations (CRUD) | `GET/PUT/DELETE /missions/mes-declarations[/{id}]` | `mobile` |
 | Matchs (stub S9) | `GET /missions/matchs` | `mobile` |
 | GPS écriture (S5) | `POST /positions` | `mobile` |
 
@@ -94,7 +95,18 @@ Contrôles effectués sur la stack Docker (`localhost:4200` web, `localhost:8080
 
 **Note démo mobile :** si le conteneur `fretcorridor-backend` n'a pas été reconstruit après ajout d'endpoints mobile (`GET /chauffeurs/me`, `POST /positions`), l'équipe mobile doit lancer `docker compose up --build`. **Cela n'affecte pas le web.**
 
-### 2.4 Règles de modification (éviter les conflits)
+### 2.4 Branches Git (intégration)
+
+| Branche | Rôle |
+|---------|------|
+| **`dev`** | Intégration — source de vérité pour tester web + mobile ensemble |
+| **`web`** | Travail quotidien équipe web → merge vers `dev` |
+| **`mobile`** | Travail quotidien équipe mobile → merge vers `dev` |
+
+Après un merge annoncé sur `dev` : `git fetch` + `git pull origin dev` (un simple `checkout` ne suffit pas).  
+Guide : [`guide-demarrage-mobile-apres-merge-dev.md`](./guide-demarrage-mobile-apres-merge-dev.md).
+
+### 2.5 Règles de modification (éviter les conflits)
 
 | Action | Équipe web | Équipe mobile |
 |--------|------------|---------------|

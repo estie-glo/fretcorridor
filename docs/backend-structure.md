@@ -1,6 +1,6 @@
 # Organisation backend — séparation web / mobile
 
-> Dernière mise à jour : 2026-07-21  
+> Dernière mise à jour : 2026-07-28  
 > Suite des sprints : [`ROADMAP.md`](./ROADMAP.md)
 
 ## Pourquoi cette structure ?
@@ -28,12 +28,13 @@ Ce n’est **pas** deux backends : une seule app Spring Boot sur le port `8080`.
 ## Déjà livré (ne pas re-planifier)
 
 - Hubs `GET /api/hubs`, axes enrichis, `PATCH /api/axes/{id}/activation`
-- Missions bureau `GET /api/missions`, `GET /api/missions/{id}`
+- Missions bureau `GET /api/missions`, `GET /api/missions/{id}`, transitions S6
+- Offres chargeur `GET /api/missions/offres`
 - Tracking / ETA lecture `GET /api/missions/{id}/tracking|eta`
-- Missions mobile : `POST /declare-vide`, `GET /matchs`, `POST /positions` (S5 écriture)
+- Missions mobile : `POST /declare-vide`, CRUD `mes-declarations`, `GET /matchs` (stub), `POST /positions` (S5)
 - Chauffeur mobile : `GET /chauffeurs/me`, `POST /kyc/documents`
 
 ## Suite (ordre strict — voir ROADMAP)
 
-Sprint courant : **MVP Phase 1 clôturé** (S8 fait). Prochaine : Phase 2 S9 matching.  
-S5 mobile (`POST /positions`) différé.
+Sprint courant : **MVP Phase 1 clôturé**. Prochaine : **Phase 2 S9** matching.  
+S5 écriture (`POST /positions`) : **livré** ; GPS background optionnel.
