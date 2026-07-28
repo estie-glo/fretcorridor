@@ -16,7 +16,7 @@ class DeclarationLocalDb {
     final path = join(await getDatabasesPath(), 'fretcorridor_local.db');
     return openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE declarations_vide (
@@ -36,17 +36,28 @@ class DeclarationLocalDb {
         await _createPositionsTable(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 2) {
-          await db.execute(
-              'ALTER TABLE declarations_vide ADD COLUMN mission_id TEXT');
-          await _createPositionsTable(db);
-        }
-        if (oldVersion < 3) {
-          await db.execute(
-              'ALTER TABLE declarations_vide ADD COLUMN disponible_de TEXT');
-        }
+        // Migrations idempotentes : ne plantent jamais si la colonne existe déjà
+        // (protège contre les doublons de merge Git, les upgrades partiels, etc.)
+        await _ajouterColonneSiAbsente(db, 'declarations_vide', 'mission_id', 'TEXT');
+        await _ajouterColonneSiAbsente(db, 'declarations_vide', 'disponible_de', 'TEXT');
+        await _createPositionsTable(db);
       },
     );
+  }
+
+  static Future<void> _ajouterColonneSiAbsente(
+      Database db, String table, String colonne, String type) async {
+    try {
+      final infos = await db.rawQuery('PRAGMA table_info($table)');
+      final existe = infos.any((c) => c['name'] == colonne);
+      if (!existe) {
+        await db.execute('ALTER TABLE $table ADD COLUMN $colonne $type');
+      }
+    } catch (e) {
+      // Dernier filet de sécurité : ignore "duplicate column name" si jamais
+      // la vérification PRAGMA elle-même arrivait après coup.
+      if (!e.toString().contains('duplicate column name')) rethrow;
+    }
   }
 
   static Future<void> _createPositionsTable(Database db) async {
@@ -80,7 +91,6 @@ class DeclarationLocalDb {
         where: 'id_local = ?', whereArgs: [idLocal]);
   }
 
-  // ── Modifier une déclaration locale après édition serveur ──
   static Future<void> mettreAJour(
     String idLocal, {
     String? typeCamion,
@@ -97,7 +107,6 @@ class DeclarationLocalDb {
         where: 'id_local = ?', whereArgs: [idLocal]);
   }
 
-  // ── Supprimer une déclaration locale ───────────────────────
   static Future<void> supprimer(String idLocal) async {
     final db = await database;
     await db.delete('declarations_vide', where: 'id_local = ?', whereArgs: [idLocal]);
@@ -127,8 +136,6 @@ class DeclarationLocalDb {
         await db.query('declarations_vide', orderBy: 'date_creation DESC');
     return maps.map((m) => DeclarationVideModel.fromMap(m)).toList();
   }
-
-  // ── Positions GPS (S5 offline) ────────────────────────────
 
   static Future<void> ajouterPosition(PositionPendingModel position) async {
     final db = await database;

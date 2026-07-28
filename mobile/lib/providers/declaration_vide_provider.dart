@@ -54,6 +54,53 @@ class DeclarationVideNotifier extends StateNotifier<DeclarationVideState> {
     state = state.copyWith(declarations: declarations);
   }
 
+  // ── Recharger depuis le serveur (source de vérité) ─────────
+  // Corrige le fait que la liste locale seule ne reflète que CET appareil :
+  // après une désinstallation, ou sur un autre téléphone/compte partagé,
+  // la vraie liste vient de GET /missions/mes-declarations.
+  Future<void> chargerDepuisServeur() async {
+    state = state.copyWith(chargement: true, erreur: null);
+    try {
+      final response = await _dio.get('/missions/mes-declarations');
+      final items = (response.data as List);
+
+      for (final item in items) {
+        final missionId = item['id']?.toString();
+        if (missionId == null) continue;
+
+        final dejaLocal = state.declarations.any((d) => d.missionId == missionId);
+        if (dejaLocal) continue; // déjà présente localement, rien à dupliquer
+
+        final nouvelle = DeclarationVideModel(
+          idLocal: _uuid.v4(),
+          missionId: missionId,
+          axeId: item['axeId']?.toString() ?? '',
+          axeNom: item['axeNom']?.toString() ?? '',
+          latitude: (item['latitude'] as num?)?.toDouble() ?? 0,
+          longitude: (item['longitude'] as num?)?.toDouble() ?? 0,
+          typeCamion: item['typeCamion']?.toString() ?? '',
+          capaciteTonnes: (item['capaciteTonnes'] as num?)?.toDouble() ?? 0,
+          dateCreation: item['dateDeclaration'] != null
+              ? DateTime.parse(item['dateDeclaration'])
+              : DateTime.now(),
+          disponibleDe: item['disponibleDe'] != null
+              ? DateTime.parse(item['disponibleDe'])
+              : null,
+          synchronise: true,
+        );
+        await DeclarationLocalDb.ajouter(nouvelle);
+      }
+
+      await _chargerLocal();
+      state = state.copyWith(chargement: false);
+    } on DioException catch (e) {
+      state = state.copyWith(
+        chargement: false,
+        erreur: 'Impossible de charger depuis le serveur : ${e.response?.data ?? e.message}',
+      );
+    }
+  }
+
   // ── Déclarer un camion vide (offline-first) ───────────────
   // EF-MKT-01 : disponibleDe optionnel — null = disponible immédiatement
   Future<bool> declarer({
@@ -107,7 +154,6 @@ class DeclarationVideNotifier extends StateNotifier<DeclarationVideState> {
   }
 
   // ── Modifier une déclaration déjà synchronisée ─────────────
-  // (le back-end refuse si elle a déjà un match — MODIFICATION_IMPOSSIBLE_STATUT_*)
   Future<bool> modifier({
     required String idLocal,
     required String? missionId,

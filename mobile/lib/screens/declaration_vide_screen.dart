@@ -30,6 +30,7 @@ class _DeclarationVideScreenState extends ConsumerState<DeclarationVideScreen> {
     // Tente une synchro dès l'ouverture si on est en ligne
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(declarationVideProvider.notifier).synchroniserEnAttente();
+      ref.read(declarationVideProvider.notifier).chargerDepuisServeur();
     });
   }
 
