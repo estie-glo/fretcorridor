@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/notification_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/brand_logo.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
@@ -25,7 +26,14 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     return Scaffold(
       backgroundColor: AppColors.fond,
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: const Row(
+          children: [
+            BrandLogo(),
+            SizedBox(width: 10),
+            Flexible(
+                child: Text('Notifications', overflow: TextOverflow.ellipsis)),
+          ],
+        ),
         actions: [
           if (state.nonLues > 0)
             Padding(
@@ -33,7 +41,8 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
               child: Center(
                 child: Chip(
                   label: Text('${state.nonLues}'),
-                  backgroundColor: AppColors.marqueOrange.withValues(alpha: 0.15),
+                  backgroundColor:
+                      AppColors.marqueOrange.withValues(alpha: 0.15),
                 ),
               ),
             ),

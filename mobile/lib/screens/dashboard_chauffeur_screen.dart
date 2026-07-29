@@ -5,6 +5,7 @@ import '../providers/connectivity_provider.dart';
 import '../providers/notification_provider.dart';
 import '../providers/tracking_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/brand_logo.dart';
 
 class DashboardChauffeurScreen extends ConsumerStatefulWidget {
   const DashboardChauffeurScreen({super.key});
@@ -41,7 +42,18 @@ class _DashboardChauffeurScreenState
     return Scaffold(
       backgroundColor: AppColors.fond,
       appBar: AppBar(
-        title: const Text('Espace chauffeur'),
+        title: const Row(
+          children: [
+            BrandLogo(),
+            SizedBox(width: 10),
+            Flexible(
+              child: Text(
+                'Espace chauffeur',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
         actions: [
           Stack(
             children: [
@@ -163,8 +175,12 @@ class _DashboardChauffeurScreenState
                         Switch(
                           value: trackingState.suiviAutoActif,
                           onChanged: (actif) => actif
-                              ? ref.read(trackingProvider.notifier).demarrerSuiviAuto()
-                              : ref.read(trackingProvider.notifier).arreterSuiviAuto(),
+                              ? ref
+                                  .read(trackingProvider.notifier)
+                                  .demarrerSuiviAuto()
+                              : ref
+                                  .read(trackingProvider.notifier)
+                                  .arreterSuiviAuto(),
                         ),
                       ],
                     ),

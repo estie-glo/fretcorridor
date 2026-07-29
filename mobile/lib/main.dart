@@ -68,29 +68,26 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: AppColors.fond,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(color: AppColors.accent),
-            SizedBox(height: 16),
-            Text(
-              'FretCorridor',
-              style: TextStyle(
-                color: AppColors.texte,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+    return Scaffold(
+  backgroundColor: AppColors.fond,
+  body: Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          'assets/images/fretcorridor_logo.png',
+          height: 56,
         ),
-      ),
-    );
-  }
+        const SizedBox(height: 24),
+        const CircularProgressIndicator(
+          color: AppColors.accent,
+        ),
+      ],
+    ),
+  ),
+);
 }
-
+}
 class PlaceholderDashboard extends ConsumerWidget {
   final String role;
   const PlaceholderDashboard({super.key, required this.role});

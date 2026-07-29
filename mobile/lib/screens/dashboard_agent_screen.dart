@@ -6,25 +6,42 @@ import '../providers/chauffeur_provider.dart';
 import '../models/chauffeur_model.dart';
 import '../theme/app_theme.dart';
 import 'enrolement_screen.dart';
+import '../widgets/brand_logo.dart';
 
 class DashboardAgentScreen extends ConsumerWidget {
   const DashboardAgentScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState      = ref.watch(authProvider);
+    final authState = ref.watch(authProvider);
     final chauffeurState = ref.watch(chauffeurProvider);
 
     return Scaffold(
       backgroundColor: AppColors.fond,
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: Row(
           children: [
-            Text('Dashboard Agent', style: Theme.of(context).textTheme.headlineMedium),
-            Text(
-              authState.utilisateur?.configTenant.nomBureau ?? '',
-              style: const TextStyle(color: AppColors.accent, fontSize: 11),
+            const BrandLogo(),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Dashboard Agent',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  Text(
+                    authState.utilisateur?.configTenant.nomBureau ?? '',
+                    style: const TextStyle(
+                      color: AppColors.accent,
+                      fontSize: 11,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -39,7 +56,6 @@ class DashboardAgentScreen extends ConsumerWidget {
           ),
         ],
       ),
-
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           await showModalBottomSheet(
@@ -53,24 +69,26 @@ class DashboardAgentScreen extends ConsumerWidget {
         backgroundColor: AppColors.accent,
         icon: const Icon(Icons.person_add, color: AppColors.texteBouton),
         label: Text('Enrôler',
-            style: TextStyle(color: AppColors.texteBouton, fontWeight: FontWeight.bold)),
+            style: TextStyle(
+                color: AppColors.texteBouton, fontWeight: FontWeight.bold)),
       ),
-
       body: chauffeurState.chargement
-          ? const Center(child: CircularProgressIndicator(color: AppColors.accent))
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.accent))
           : chauffeurState.erreur != null
               ? _ErreurView(
                   message: chauffeurState.erreur!,
-                  onRetry: () => ref.read(chauffeurProvider.notifier).chargerTout(),
+                  onRetry: () =>
+                      ref.read(chauffeurProvider.notifier).chargerTout(),
                 )
               : RefreshIndicator(
                   color: AppColors.accent,
                   backgroundColor: AppColors.surface,
-                  onRefresh: () => ref.read(chauffeurProvider.notifier).chargerTout(),
+                  onRefresh: () =>
+                      ref.read(chauffeurProvider.notifier).chargerTout(),
                   child: ListView(
                     padding: const EdgeInsets.all(16),
                     children: [
-
                       // ── Stats asymétriques : 1 grande + 2 petites empilées ──
                       SizedBox(
                         height: 130,
@@ -93,7 +111,8 @@ class DashboardAgentScreen extends ConsumerWidget {
                                   Expanded(
                                     child: _StatMini(
                                       titre: 'KYC en attente',
-                                      valeur: '${chauffeurState.kycEnAttente.length}',
+                                      valeur:
+                                          '${chauffeurState.kycEnAttente.length}',
                                       couleur: AppColors.accent,
                                     ),
                                   ),
@@ -101,7 +120,8 @@ class DashboardAgentScreen extends ConsumerWidget {
                                   Expanded(
                                     child: _StatMini(
                                       titre: 'KYC validés',
-                                      valeur: '${chauffeurState.chauffeurs.where((c) => c.kycValide).length}',
+                                      valeur:
+                                          '${chauffeurState.chauffeurs.where((c) => c.kycValide).length}',
                                       couleur: AppColors.succes,
                                     ),
                                   ),
@@ -120,41 +140,52 @@ class DashboardAgentScreen extends ConsumerWidget {
                           decoration: BoxDecoration(
                             color: AppColors.succes.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: AppColors.succes.withValues(alpha: 0.4)),
+                            border: Border.all(
+                                color: AppColors.succes.withValues(alpha: 0.4)),
                           ),
                           child: Row(children: [
-                            const Icon(Icons.check_circle, color: AppColors.succes, size: 18),
+                            const Icon(Icons.check_circle,
+                                color: AppColors.succes, size: 18),
                             const SizedBox(width: 8),
                             Text(chauffeurState.succes!,
-                                style: const TextStyle(color: AppColors.succes, fontSize: 13)),
+                                style: const TextStyle(
+                                    color: AppColors.succes, fontSize: 13)),
                           ]),
                         ),
 
                       if (chauffeurState.kycEnAttente.isNotEmpty) ...[
-                        Text('KYC en attente', style: Theme.of(context).textTheme.titleMedium),
+                        Text('KYC en attente',
+                            style: Theme.of(context).textTheme.titleMedium),
                         const SizedBox(height: 10),
                         ...chauffeurState.kycEnAttente.map((c) => _KycCard(
                               chauffeur: c,
-                              onValider: () => _confirmerValidation(context, ref, c.id, true),
-                              onRejeter: () => _confirmerValidation(context, ref, c.id, false),
+                              onValider: () => _confirmerValidation(
+                                  context, ref, c.id, true),
+                              onRejeter: () => _confirmerValidation(
+                                  context, ref, c.id, false),
                             )),
                         const SizedBox(height: 20),
                       ],
 
-                      Text('Mes chauffeurs', style: Theme.of(context).textTheme.titleMedium),
+                      Text('Mes chauffeurs',
+                          style: Theme.of(context).textTheme.titleMedium),
                       const SizedBox(height: 10),
 
                       if (chauffeurState.chauffeurs.isEmpty)
-                        const _VideView(message: 'Aucun chauffeur enrôlé.\nAppuyez sur + pour en ajouter un.')
+                        const _VideView(
+                            message:
+                                'Aucun chauffeur enrôlé.\nAppuyez sur + pour en ajouter un.')
                       else
-                        ...chauffeurState.chauffeurs.map((c) => _ChauffeurItem(chauffeur: c)),
+                        ...chauffeurState.chauffeurs
+                            .map((c) => _ChauffeurItem(chauffeur: c)),
                     ],
                   ),
                 ),
     );
   }
 
-  void _confirmerValidation(BuildContext context, WidgetRef ref, String chauffeurId, bool approuve) {
+  void _confirmerValidation(
+      BuildContext context, WidgetRef ref, String chauffeurId, bool approuve) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -170,16 +201,21 @@ class DashboardAgentScreen extends ConsumerWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Annuler', style: TextStyle(color: AppColors.texteMuet)),
+            child: const Text('Annuler',
+                style: TextStyle(color: AppColors.texteMuet)),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(ctx);
-              ref.read(chauffeurProvider.notifier).validerKyc(chauffeurId: chauffeurId, approuve: approuve);
+              ref
+                  .read(chauffeurProvider.notifier)
+                  .validerKyc(chauffeurId: chauffeurId, approuve: approuve);
             },
             style: ElevatedButton.styleFrom(
-                backgroundColor: approuve ? AppColors.succes : AppColors.erreur),
-            child: Text(approuve ? 'Valider' : 'Rejeter', style: const TextStyle(color: Colors.white)),
+                backgroundColor:
+                    approuve ? AppColors.succes : AppColors.erreur),
+            child: Text(approuve ? 'Valider' : 'Rejeter',
+                style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -192,7 +228,8 @@ class _StatHero extends StatelessWidget {
   final String titre;
   final String valeur;
   final IconData icon;
-  const _StatHero({required this.titre, required this.valeur, required this.icon});
+  const _StatHero(
+      {required this.titre, required this.valeur, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +238,8 @@ class _StatHero extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.accentProfond.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.accentProfond.withValues(alpha: 0.4)),
+        border:
+            Border.all(color: AppColors.accentProfond.withValues(alpha: 0.4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,8 +247,12 @@ class _StatHero extends StatelessWidget {
         children: [
           Icon(icon, color: AppColors.accent, size: 26),
           Text(valeur,
-              style: GoogleFonts.fraunces(fontSize: 34, fontWeight: FontWeight.w600, color: AppColors.texte)),
-          Text(titre, style: const TextStyle(color: AppColors.texteMuet, fontSize: 12)),
+              style: GoogleFonts.fraunces(
+                  fontSize: 34,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.texte)),
+          Text(titre,
+              style: const TextStyle(color: AppColors.texteMuet, fontSize: 12)),
         ],
       ),
     );
@@ -221,7 +263,8 @@ class _StatMini extends StatelessWidget {
   final String titre;
   final String valeur;
   final Color couleur;
-  const _StatMini({required this.titre, required this.valeur, required this.couleur});
+  const _StatMini(
+      {required this.titre, required this.valeur, required this.couleur});
 
   @override
   Widget build(BuildContext context) {
@@ -235,20 +278,25 @@ class _StatMini extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(titre, style: const TextStyle(color: AppColors.texteMuet, fontSize: 11)),
-          Text(valeur, style: TextStyle(color: couleur, fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(titre,
+              style: const TextStyle(color: AppColors.texteMuet, fontSize: 11)),
+          Text(valeur,
+              style: TextStyle(
+                  color: couleur, fontSize: 20, fontWeight: FontWeight.bold)),
         ],
       ),
     );
   }
 }
 
-
 class _KycCard extends StatelessWidget {
   final ChauffeurModel chauffeur;
   final VoidCallback onValider;
   final VoidCallback onRejeter;
-  const _KycCard({required this.chauffeur, required this.onValider, required this.onRejeter});
+  const _KycCard(
+      {required this.chauffeur,
+      required this.onValider,
+      required this.onRejeter});
 
   @override
   Widget build(BuildContext context) {
@@ -265,15 +313,19 @@ class _KycCard extends StatelessWidget {
           CircleAvatar(
             backgroundColor: AppColors.surfaceClaire,
             child: Text(chauffeur.prenom.isNotEmpty ? chauffeur.prenom[0] : '?',
-                style: const TextStyle(color: AppColors.accent, fontWeight: FontWeight.bold)),
+                style: const TextStyle(
+                    color: AppColors.accent, fontWeight: FontWeight.bold)),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(chauffeur.nomComplet,
-                  style: const TextStyle(color: AppColors.texte, fontWeight: FontWeight.bold)),
+                  style: const TextStyle(
+                      color: AppColors.texte, fontWeight: FontWeight.bold)),
               Text(chauffeur.telephone,
-                  style: const TextStyle(color: AppColors.texteMuet, fontSize: 12)),
+                  style: const TextStyle(
+                      color: AppColors.texteMuet, fontSize: 12)),
             ]),
           ),
           Container(
@@ -283,7 +335,10 @@ class _KycCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Text('En attente',
-                style: TextStyle(color: AppColors.accent, fontSize: 10, fontWeight: FontWeight.bold)),
+                style: TextStyle(
+                    color: AppColors.accent,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold)),
           ),
         ]),
         const SizedBox(height: 12),
@@ -294,7 +349,8 @@ class _KycCard extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.erreur,
                 side: const BorderSide(color: AppColors.erreur),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
               child: const Text('Rejeter'),
             ),
@@ -305,9 +361,11 @@ class _KycCard extends StatelessWidget {
               onPressed: onValider,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.succes,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
-              child: const Text('Valider', style: TextStyle(color: Colors.white)),
+              child:
+                  const Text('Valider', style: TextStyle(color: Colors.white)),
             ),
           ),
         ]),
@@ -334,17 +392,27 @@ class _ChauffeurItem extends StatelessWidget {
         CircleAvatar(
           backgroundColor: AppColors.surfaceClaire,
           child: Text(chauffeur.prenom.isNotEmpty ? chauffeur.prenom[0] : '?',
-              style: const TextStyle(color: AppColors.accent, fontWeight: FontWeight.bold)),
+              style: const TextStyle(
+                  color: AppColors.accent, fontWeight: FontWeight.bold)),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(chauffeur.nomComplet,
-                style: const TextStyle(color: AppColors.texte, fontWeight: FontWeight.bold, fontSize: 13)),
-            Text(chauffeur.telephone, style: const TextStyle(color: AppColors.texteMuet, fontSize: 11)),
+                style: const TextStyle(
+                    color: AppColors.texte,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13)),
+            Text(chauffeur.telephone,
+                style:
+                    const TextStyle(color: AppColors.texteMuet, fontSize: 11)),
             Text(chauffeur.badgeKyc,
                 style: TextStyle(
-                    color: chauffeur.kycValide ? AppColors.succes : AppColors.texteMuet, fontSize: 11)),
+                    color: chauffeur.kycValide
+                        ? AppColors.succes
+                        : AppColors.texteMuet,
+                    fontSize: 11)),
           ]),
         ),
         const Icon(Icons.chevron_right, color: AppColors.texteMuet),
@@ -365,7 +433,8 @@ class _VideView extends StatelessWidget {
           const Icon(Icons.people_outline, color: AppColors.bordure, size: 48),
           const SizedBox(height: 12),
           Text(message,
-              textAlign: TextAlign.center, style: const TextStyle(color: AppColors.texteMuet, fontSize: 14)),
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: AppColors.texteMuet, fontSize: 14)),
         ]),
       ),
     );
@@ -382,12 +451,15 @@ class _ErreurView extends StatelessWidget {
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         const Icon(Icons.wifi_off, color: AppColors.erreur, size: 48),
         const SizedBox(height: 12),
-        Text(message, textAlign: TextAlign.center, style: const TextStyle(color: AppColors.texteMuet, fontSize: 14)),
+        Text(message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: AppColors.texteMuet, fontSize: 14)),
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: onRetry,
           style: ElevatedButton.styleFrom(backgroundColor: AppColors.accent),
-          child: const Text('Réessayer', style: TextStyle(color: AppColors.texteBouton)),
+          child: const Text('Réessayer',
+              style: TextStyle(color: AppColors.texteBouton)),
         ),
       ]),
     );
