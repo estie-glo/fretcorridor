@@ -11,10 +11,10 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _formKey       = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   final _telController = TextEditingController();
   final _pinController = TextEditingController();
-  bool _pinVisible      = false;
+  bool _pinVisible = false;
   String _roleSelectionne = 'CHAUFFEUR';
 
   @override
@@ -27,9 +27,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void _login() {
     if (_formKey.currentState!.validate()) {
       ref.read(authProvider.notifier).login(
-        _telController.text.trim(),
-        _pinController.text.trim(),
-      );
+            _telController.text.trim(),
+            _pinController.text.trim(),
+          );
     }
   }
 
@@ -67,16 +67,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 48),
 
                 Center(
-                  child: Image.asset('assets/images/flysoft_logo.png', height: 64),
+                  child: Image.asset('assets/images/fretcorridor_logo.png',
+                      height: 64),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 20),
 
-                Text('FretCorridor', style: Theme.of(context).textTheme.headlineLarge),
-                const SizedBox(height: 4),
-                const Text('Réseau logistique CEMAC',
-                    style: TextStyle(fontSize: 14, color: AppColors.texteMuet)),
-                const SizedBox(height: 36),
-
+                const Center(
+                  child: Text(
+                    'Réseau logistique CEMAC',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.texteMuet,
+                    ),
+                  ),
+                ),
                 // ── Sélection rôle ───────────────────────
                 Row(
                   children: ['CHAUFFEUR', 'AGENT'].map((role) {
@@ -91,7 +95,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             color: actif ? AppColors.accent : AppColors.surface,
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                              color: actif ? AppColors.accent : AppColors.bordure,
+                              color:
+                                  actif ? AppColors.accent : AppColors.bordure,
                             ),
                           ),
                           child: Text(
@@ -100,7 +105,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
-                              color: actif ? AppColors.texteBouton : AppColors.texteMuet,
+                              color: actif
+                                  ? AppColors.texteBouton
+                                  : AppColors.texteMuet,
                             ),
                           ),
                         ),
@@ -111,8 +118,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 28),
 
                 const Text('TÉLÉPHONE',
-                    style: TextStyle(fontSize: 11, letterSpacing: 1.2,
-                        color: AppColors.texteMuet, fontWeight: FontWeight.w600)),
+                    style: TextStyle(
+                        fontSize: 11,
+                        letterSpacing: 1.2,
+                        color: AppColors.texteMuet,
+                        fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _telController,
@@ -135,7 +145,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: const BorderSide(color: AppColors.accent),
                     ),
-                    prefixIcon: const Icon(Icons.phone, color: AppColors.texteMuet),
+                    prefixIcon:
+                        const Icon(Icons.phone, color: AppColors.texteMuet),
                   ),
                   validator: (v) {
                     if (v == null || v.isEmpty) return 'Téléphone obligatoire';
@@ -148,15 +159,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 20),
 
                 const Text('CODE PIN',
-                    style: TextStyle(fontSize: 11, letterSpacing: 1.2,
-                        color: AppColors.texteMuet, fontWeight: FontWeight.w600)),
+                    style: TextStyle(
+                        fontSize: 11,
+                        letterSpacing: 1.2,
+                        color: AppColors.texteMuet,
+                        fontWeight: FontWeight.w600)),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _pinController,
                   obscureText: !_pinVisible,
                   keyboardType: TextInputType.number,
                   maxLength: 6,
-                  style: const TextStyle(color: AppColors.texte, fontSize: 20, letterSpacing: 8),
+                  style: const TextStyle(
+                      color: AppColors.texte, fontSize: 20, letterSpacing: 8),
                   decoration: InputDecoration(
                     hintText: '• • • •',
                     hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
@@ -175,13 +190,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: const BorderSide(color: AppColors.accent),
                     ),
-                    prefixIcon: const Icon(Icons.lock, color: AppColors.texteMuet),
+                    prefixIcon:
+                        const Icon(Icons.lock, color: AppColors.texteMuet),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _pinVisible ? Icons.visibility_off : Icons.visibility,
                         color: AppColors.texteMuet,
                       ),
-                      onPressed: () => setState(() => _pinVisible = !_pinVisible),
+                      onPressed: () =>
+                          setState(() => _pinVisible = !_pinVisible),
                     ),
                   ),
                   validator: (v) {
@@ -200,15 +217,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     decoration: BoxDecoration(
                       color: AppColors.erreur.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.erreur.withValues(alpha: 0.4)),
+                      border: Border.all(
+                          color: AppColors.erreur.withValues(alpha: 0.4)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.warning_amber, color: AppColors.erreur, size: 18),
+                        const Icon(Icons.warning_amber,
+                            color: AppColors.erreur, size: 18),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(authState.erreur!,
-                              style: const TextStyle(color: AppColors.erreur, fontSize: 13)),
+                              style: const TextStyle(
+                                  color: AppColors.erreur, fontSize: 13)),
                         ),
                       ],
                     ),
@@ -222,17 +242,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onPressed: authState.chargement ? null : _login,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.accent,
-                      disabledBackgroundColor: AppColors.accent.withValues(alpha: 0.5),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      disabledBackgroundColor:
+                          AppColors.accent.withValues(alpha: 0.5),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                     child: authState.chargement
                         ? const SizedBox(
-                            height: 22, width: 22,
+                            height: 22,
+                            width: 22,
                             child: CircularProgressIndicator(
                                 color: AppColors.texteBouton, strokeWidth: 2.5))
                         : Text('Se connecter',
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                                 color: AppColors.texteBouton)),
                   ),
                 ),
@@ -241,7 +265,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Center(
                   child: Text(
                     'Pas de compte ? Contactez votre agent terrain.',
-                    style: TextStyle(fontSize: 12, color: AppColors.texteMuet.withValues(alpha: 0.8)),
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.texteMuet.withValues(alpha: 0.8)),
                   ),
                 ),
                 const SizedBox(height: 32),
