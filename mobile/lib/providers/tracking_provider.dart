@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:uuid/uuid.dart';
 import '../models/position_pending_model.dart';
 import '../services/declaration_local_db.dart';
@@ -11,6 +12,7 @@ import 'dio_provider.dart';
 class TrackingState {
   final String? missionIdActive;
   final bool envoiEnCours;
+  final bool suiviAutoActif;
   final int positionsEnAttente;
   final String? erreur;
   final String? succes;
@@ -18,6 +20,7 @@ class TrackingState {
   const TrackingState({
     this.missionIdActive,
     this.envoiEnCours = false,
+    this.suiviAutoActif = false,
     this.positionsEnAttente = 0,
     this.erreur,
     this.succes,
@@ -26,6 +29,7 @@ class TrackingState {
   TrackingState copyWith({
     String? missionIdActive,
     bool? envoiEnCours,
+    bool? suiviAutoActif,
     int? positionsEnAttente,
     String? erreur,
     String? succes,
@@ -33,6 +37,7 @@ class TrackingState {
     return TrackingState(
       missionIdActive: missionIdActive ?? this.missionIdActive,
       envoiEnCours: envoiEnCours ?? this.envoiEnCours,
+      suiviAutoActif: suiviAutoActif ?? this.suiviAutoActif,
       positionsEnAttente: positionsEnAttente ?? this.positionsEnAttente,
       erreur: erreur,
       succes: succes,
@@ -50,14 +55,10 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
   }
 
   Future<void> _initialiser() async {
-    final missionId = await DeclarationLocalDb.derniereMissionIdSynchronisee();
-    final enAttente = await DeclarationLocalDb.getPositionsNonSynchronisees();
-    state = state.copyWith(
-      missionIdActive: missionId,
-      positionsEnAttente: enAttente.length,
-    );
+    await _rafraichirCompteurs();
   }
 
+  // ── Capture manuelle ponctuelle (bouton "Envoyer ma position") ────────
   Future<bool> capturerEtEnvoyerPosition() async {
     final missionId = state.missionIdActive;
     if (missionId == null) {
@@ -78,6 +79,49 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
       return false;
     }
 
+    await _traiterPosition(position, missionId);
+    state = state.copyWith(envoiEnCours: false);
+    return true;
+  }
+
+  // ── Suivi continu en tâche de fond (EF-TRK-01) ─────────────────────────
+  // Démarre un flux GPS qui continue même app minimisée (service de premier
+  // plan Android avec notification persistante ; background updates iOS).
+  Future<void> demarrerSuiviAuto() async {
+    final missionId = state.missionIdActive;
+    if (missionId == null || state.suiviAutoActif) {
+      return;
+    }
+
+    final demarre = await GpsService.demarrerFlux(
+      (position) => _traiterPosition(position, missionId),
+      onErreur: (_) => state = state.copyWith(
+        erreur: 'Suivi GPS interrompu. Réactivez la localisation.',
+        suiviAutoActif: false,
+      ),
+    );
+
+    state = state.copyWith(suiviAutoActif: demarre);
+  }
+
+  Future<void> arreterSuiviAuto() async {
+    await GpsService.arreterFlux();
+    state = state.copyWith(suiviAutoActif: false);
+  }
+
+  // Appelé après une déclaration (ou sa suppression) pour resynchroniser
+  // l'état "mission active" et démarrer/arrêter le suivi en conséquence.
+  Future<void> rafraichirEtDemarrer() async {
+    await _rafraichirCompteurs();
+    if (state.missionIdActive != null) {
+      await demarrerSuiviAuto();
+    } else {
+      await arreterSuiviAuto();
+    }
+  }
+
+  // ── Traitement commun capture manuelle / flux continu ──────────────────
+  Future<void> _traiterPosition(Position position, String missionId) async {
     final pending = PositionPendingModel(
       idLocal: _uuid.v4(),
       missionId: missionId,
@@ -95,18 +139,13 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
     if (enLigne) {
       final ok = await synchroniserEnAttente();
       state = state.copyWith(
-        envoiEnCours: false,
         succes: ok
             ? 'Position envoyée ✅'
             : 'Enregistrée localement — sync en attente 🔄',
       );
     } else {
-      state = state.copyWith(
-        envoiEnCours: false,
-        succes: 'Hors ligne — position en attente de sync 📴',
-      );
+      state = state.copyWith(succes: 'Hors ligne — position en attente de sync 📴');
     }
-    return true;
   }
 
   Future<bool> synchroniserEnAttente() async {
@@ -147,6 +186,14 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
       missionIdActive: missionId,
       positionsEnAttente: enAttente.length,
     );
+  }
+
+  @override
+  void dispose() {
+    // Sécurité : ne jamais laisser un flux GPS tourner sans notifier vivant
+    // pour recevoir ses callbacks (évite un crash "used after dispose").
+    GpsService.arreterFlux();
+    super.dispose();
   }
 }
 

@@ -11,6 +11,7 @@ import 'screens/declaration_vide_screen.dart';
 import 'screens/profil_chauffeur_screen.dart';
 import 'screens/notifications_screen.dart';
 import 'screens/matchs_screen.dart';
+import 'screens/changer_pin_screen.dart';
 
 void main() {
   runApp(
@@ -41,11 +42,14 @@ class FretCorridorApp extends ConsumerWidget {
         '/declaration-vide': (context) => const DeclarationVideScreen(),
         '/notifications': (context) => const NotificationsScreen(),
         '/matchs': (context) => const MatchsScreen(),
+        '/changer-pin': (context) => const ChangerPinScreen(),
       },
       home: authState.chargement
           ? const SplashScreen()
           : authState.estConnecte
-              ? _homeForRole(authState.utilisateur!.role)
+              ? (authState.utilisateur!.pinTemporaire
+                  ? const ChangerPinScreen()
+                  : _homeForRole(authState.utilisateur!.role))
               : const LoginScreen(),
     );
   }

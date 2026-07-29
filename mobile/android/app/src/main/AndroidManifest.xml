@@ -2,6 +2,13 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- EF-TRK-01 (S5) : service de premier plan pour le suivi GPS continu
+         pendant une mission, même app minimisée. FOREGROUND_SERVICE_LOCATION
+         est obligatoire à partir d'Android 14 (API 34) pour ce type de
+         service ; sans elle le suivi en tâche de fond échoue silencieusement. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:label="fretcorridor_mobile"
         android:name="${applicationName}"

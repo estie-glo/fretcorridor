@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/matchs_provider.dart';
 import '../theme/app_theme.dart';
+import '../utils/date_format.dart';
 
 class MatchsScreen extends ConsumerStatefulWidget {
   const MatchsScreen({super.key});
@@ -61,11 +62,48 @@ class _MatchsScreenState extends ConsumerState<MatchsScreen> {
                         separatorBuilder: (_, __) => const SizedBox(height: 8),
                         itemBuilder: (context, index) {
                           final m = state.matchs[index];
+                          final relatif = formatRelativeTime(m.dateDeclaration);
+                          final position = formatCoordonnees(m.latitude, m.longitude);
                           return Card(
                             child: ListTile(
                               title: Text(m.axeNom ?? 'Axe'),
-                              subtitle: Text(
-                                  '${m.typeCamion ?? ''} · ${m.capaciteTonnes ?? ''} t · ${m.statut}'),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      '${m.typeCamion ?? ''} · ${m.capaciteTonnes ?? ''} t · ${m.statut}'),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.access_time,
+                                          size: 13, color: AppColors.texteMuet),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        relatif ?? 'Date inconnue',
+                                        style: const TextStyle(
+                                            fontSize: 12, color: AppColors.texteMuet),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.place_outlined,
+                                          size: 13, color: AppColors.texteMuet),
+                                      const SizedBox(width: 4),
+                                      Expanded(
+                                        child: Text(
+                                          position ?? 'Position non transmise',
+                                          style: const TextStyle(
+                                              fontSize: 12, color: AppColors.texteMuet),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              isThreeLine: true,
                               trailing: m.zoneSensible
                                   ? const Icon(Icons.warning_amber,
                                       color: AppColors.marqueOrange)

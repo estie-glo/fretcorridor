@@ -12,6 +12,7 @@ class ChauffeurModel {
   final String? dateValidationKyc;
   final String? agentNom;
   final String badgeKyc;
+  final bool? pinEnvoye; // renseigné uniquement juste après l'enrôlement
 
   const ChauffeurModel({
     required this.id,
@@ -27,6 +28,7 @@ class ChauffeurModel {
     this.dateValidationKyc,
     this.agentNom,
     required this.badgeKyc,
+    this.pinEnvoye,
   });
 
   factory ChauffeurModel.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class ChauffeurModel {
       dateValidationKyc: json['dateValidationKyc'],
       agentNom:         json['agentNom'],
       badgeKyc:         json['badgeKyc'] ?? '',
+      pinEnvoye:        json['pinEnvoye'],
     );
   }
 
