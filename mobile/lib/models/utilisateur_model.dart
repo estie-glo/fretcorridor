@@ -40,6 +40,7 @@ class UtilisateurModel {
   final String role;
   final String tenantId;
   final ConfigTenant configTenant;
+  final bool pinTemporaire;
 
   const UtilisateurModel({
     required this.accessToken,
@@ -47,7 +48,19 @@ class UtilisateurModel {
     required this.role,
     required this.tenantId,
     required this.configTenant,
+    this.pinTemporaire = false,
   });
+
+  UtilisateurModel copyWith({bool? pinTemporaire}) {
+    return UtilisateurModel(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      role: role,
+      tenantId: tenantId,
+      configTenant: configTenant,
+      pinTemporaire: pinTemporaire ?? this.pinTemporaire,
+    );
+  }
 
   // Depuis la réponse API
   factory UtilisateurModel.fromJson(Map<String, dynamic> json) {
@@ -57,6 +70,7 @@ class UtilisateurModel {
       role:         json['role'] ?? '',
       tenantId:     json['tenantId'] ?? '',
       configTenant: ConfigTenant.fromJson(json['configTenant'] ?? {}),
+      pinTemporaire: json['pinTemporaire'] ?? false,
     );
   }
 
@@ -67,6 +81,7 @@ class UtilisateurModel {
     'role':         role,
     'tenantId':     tenantId,
     'configTenant': configTenant.toJson(),
+    'pinTemporaire': pinTemporaire,
   });
 
   factory UtilisateurModel.fromJsonString(String jsonString) {

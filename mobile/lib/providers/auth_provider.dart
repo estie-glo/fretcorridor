@@ -106,6 +106,31 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  // ── Changer le PIN (forcé si pinTemporaire, ou volontaire) ─
+  Future<bool> changerPin(String ancienPin, String nouveauPin) async {
+    state = state.copyWith(chargement: true, erreur: null);
+    try {
+      await _authService.changerPin(ancienPin, nouveauPin);
+      state = state.copyWith(
+        chargement: false,
+        utilisateur: state.utilisateur?.copyWith(pinTemporaire: false),
+      );
+      return true;
+    } catch (e) {
+      final message = e.toString();
+      String erreur;
+      if (message.contains('ANCIEN_PIN_INCORRECT')) {
+        erreur = 'Ancien PIN incorrect.';
+      } else if (message.contains('NOUVEAU_PIN_IDENTIQUE')) {
+        erreur = 'Le nouveau PIN doit être différent de l\'ancien.';
+      } else {
+        erreur = 'Erreur lors du changement de PIN. Vérifiez votre réseau.';
+      }
+      state = state.copyWith(chargement: false, erreur: erreur);
+      return false;
+    }
+  }
+
   // ── Logout ────────────────────────────────────────────────
   Future<void> logout() async {
     await _authService.logout();

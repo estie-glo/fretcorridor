@@ -31,7 +31,7 @@ class _EnrolementScreenState extends ConsumerState<EnrolementScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_telephoneComplet.isEmpty) return;
 
-    final succes = await ref.read(chauffeurProvider.notifier).enroler(
+    final chauffeurCree = await ref.read(chauffeurProvider.notifier).enroler(
       nom:       _nomCtrl.text.trim(),
       prenom:    _prenomCtrl.text.trim(),
       telephone: _telephoneComplet,
@@ -39,11 +39,15 @@ class _EnrolementScreenState extends ConsumerState<EnrolementScreen> {
       numeroCNI: _cniCtrl.text.trim(),
     );
 
-    if (succes && mounted) {
+    if (chauffeurCree != null && mounted) {
+      final pinEnvoye = chauffeurCree.pinEnvoye ?? false;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Chauffeur enrôlé avec succès ✅'),
-          backgroundColor: AppColors.succes,
+        SnackBar(
+          content: Text(pinEnvoye
+              ? 'Chauffeur enrôlé ✅ — le PIN lui a été envoyé par SMS'
+              : 'Chauffeur enrôlé ✅ — envoi du SMS impossible, communiquez le PIN vous-même'),
+          backgroundColor: pinEnvoye ? AppColors.succes : AppColors.marqueOrange,
+          duration: const Duration(seconds: 4),
         ),
       );
       Navigator.pop(context);
@@ -102,7 +106,9 @@ class _EnrolementScreenState extends ConsumerState<EnrolementScreen> {
                 Icon(Icons.info_outline, color: AppColors.accentProfond, size: 18),
                 SizedBox(width: 10),
                 Expanded(child: Text(
-                  'Le chauffeur pourra se connecter avec ce numéro et ce PIN.',
+                  'Ce PIN sera envoyé par SMS au chauffeur. Si le SMS échoue, '
+                  'vous pourrez le lui communiquer vous-même : il pourra se '
+                  'connecter avec son numéro et ce PIN.',
                   style: TextStyle(color: AppColors.texteMuet, fontSize: 12),
                 )),
               ]),

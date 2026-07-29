@@ -21,7 +21,7 @@ class _DashboardChauffeurScreenState
     super.initState();
     Future.microtask(() {
       ref.read(notificationProvider.notifier).charger();
-      ref.read(trackingProvider.notifier).synchroniserEnAttente();
+      ref.read(trackingProvider.notifier).rafraichirEtDemarrer();
     });
   }
 
@@ -133,6 +133,42 @@ class _DashboardChauffeurScreenState
                         : 'Déclarez un camion vide pour activer le suivi.',
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
+                  if (trackingState.missionIdActive != null) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(
+                          trackingState.suiviAutoActif
+                              ? Icons.gps_fixed
+                              : Icons.gps_off,
+                          size: 16,
+                          color: trackingState.suiviAutoActif
+                              ? AppColors.succes
+                              : AppColors.texteMuet,
+                        ),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            trackingState.suiviAutoActif
+                                ? 'Suivi automatique actif — votre position est transmise pendant la mission'
+                                : 'Suivi automatique désactivé',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: trackingState.suiviAutoActif
+                                  ? AppColors.succes
+                                  : AppColors.texteMuet,
+                            ),
+                          ),
+                        ),
+                        Switch(
+                          value: trackingState.suiviAutoActif,
+                          onChanged: (actif) => actif
+                              ? ref.read(trackingProvider.notifier).demarrerSuiviAuto()
+                              : ref.read(trackingProvider.notifier).arreterSuiviAuto(),
+                        ),
+                      ],
+                    ),
+                  ],
                   if (trackingState.positionsEnAttente > 0) ...[
                     const SizedBox(height: 4),
                     Text(
@@ -167,7 +203,7 @@ class _DashboardChauffeurScreenState
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
                         : const Icon(Icons.my_location),
-                    label: const Text('Envoyer ma position'),
+                    label: const Text('Forcer un envoi maintenant'),
                   ),
                 ],
               ),

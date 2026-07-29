@@ -26,6 +26,17 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<!-- EF-TRK-01 (S5) : suivi GPS pendant une mission active. Sans ces
+	     clés, tout appel geolocator échoue silencieusement sur iOS (y
+	     compris la capture ponctuelle déjà existante). -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>FretCorridor utilise votre position pour déclarer votre camion disponible et transmettre votre position pendant une mission.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>FretCorridor a besoin d'accéder à votre position en arrière-plan pour continuer le suivi pendant une mission active, même quand l'application est minimisée.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/axe_provider.dart';
 import '../providers/connectivity_provider.dart';
 import '../providers/declaration_vide_provider.dart';
+import '../utils/date_format.dart';
 import '../models/axe_model.dart';
 import '../models/declaration_vide_model.dart';
 import '../theme/app_theme.dart';
@@ -339,6 +340,13 @@ class _DeclarationVideScreenState extends ConsumerState<DeclarationVideScreen> {
                               Text(d.axeNom, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                               Text('${d.typeCamion} · ${d.capaciteTonnes}T',
                                   style: const TextStyle(color: AppColors.texteMuet, fontSize: 12)),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${formatRelativeTime(d.dateCreation.toIso8601String()) ?? formatDateHeure(d.dateCreation.toIso8601String()) ?? ''}'
+                                '${formatCoordonnees(d.latitude, d.longitude) != null ? ' · ${formatCoordonnees(d.latitude, d.longitude)}' : ''}',
+                                style: const TextStyle(color: AppColors.texteMuet, fontSize: 11),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ],
                           ),
                         ),
@@ -582,7 +590,24 @@ class _DetailDeclarationSheetState extends ConsumerState<_DetailDeclarationSheet
             Text('Type de camion : ${d.typeCamion}', style: const TextStyle(fontSize: 14)),
             const SizedBox(height: 8),
             Text('Capacité : ${d.capaciteTonnes} T', style: const TextStyle(fontSize: 14)),
-            const SizedBox(height: 28),
+            const SizedBox(height: 8),
+            Text(
+              'Déclarée le ${formatDateHeure(d.dateCreation.toIso8601String()) ?? '—'}'
+              '${formatRelativeTime(d.dateCreation.toIso8601String()) != null ? ' (${formatRelativeTime(d.dateCreation.toIso8601String())})' : ''}',
+              style: const TextStyle(fontSize: 13, color: AppColors.texteMuet),
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                const Icon(Icons.place_outlined, size: 14, color: AppColors.texteMuet),
+                const SizedBox(width: 4),
+                Text(
+                  formatCoordonnees(d.latitude, d.longitude) ?? 'Position non transmise',
+                  style: const TextStyle(fontSize: 13, color: AppColors.texteMuet),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(

@@ -70,8 +70,8 @@ class ChauffeurNotifier extends StateNotifier<ChauffeurState> {
     }
   }
 
-  // ── Enrôler un chauffeur 
-  Future<bool> enroler({
+  // ── Enrôler un chauffeur ─ retourne le chauffeur créé (pinEnvoye inclus) ou null si échec
+  Future<ChauffeurModel?> enroler({
     required String nom,
     required String prenom,
     required String telephone,
@@ -96,20 +96,43 @@ class ChauffeurNotifier extends StateNotifier<ChauffeurState> {
         chauffeurs: [...state.chauffeurs, nouveauChauffeur],
         succes: '$prenom $nom enrôlé avec succès ✅',
       );
-      return true;
-    } on DioException catch (e) {
-      String msg = 'Erreur lors de l\'enrôlement';
-      if (e.response?.data != null) {
-        final data = e.response!.data;
-        if (data['code'] == 'TELEPHONE_DEJA_UTILISE') {
-          msg = 'Ce numéro est déjà utilisé';
-        } else if (data['message'] != null) {
-          msg = data['message'];
+      return nouveauChauffeur;
+   } on DioException catch (e) {
+  String msg = "Erreur lors de l'enrôlement";
+
+  if (e.response?.data is Map<String, dynamic>) {
+    final data = e.response!.data as Map<String, dynamic>;
+    final erreur = data["message"]?.toString();
+
+    switch (erreur) {
+      case "TELEPHONE_DEJA_UTILISE":
+        msg = "Ce numéro de téléphone est déjà utilisé.";
+        break;
+
+      case "AGENT_INTROUVABLE":
+        msg = "Agent introuvable.";
+        break;
+
+      case "ACCES_REFUSE":
+        msg = "Accès refusé.";
+        break;
+
+      default:
+        if (erreur != null && erreur.isNotEmpty) {
+          msg = erreur;
         }
-      }
-      state = state.copyWith(chargement: false, erreur: msg);
-      return false;
     }
+  } else if (e.message != null) {
+    msg = e.message!;
+  }
+
+  state = state.copyWith(
+    chargement: false,
+    erreur: msg,
+  );
+
+  return null;
+}
   }
 
   // ── Valider un KYC 

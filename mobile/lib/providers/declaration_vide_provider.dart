@@ -7,6 +7,7 @@ import '../services/declaration_local_db.dart';
 import '../services/gps_service.dart';
 import 'dio_provider.dart';
 import 'connectivity_provider.dart';
+import 'tracking_provider.dart';
 
 class DeclarationVideState {
   final List<DeclarationVideModel> declarations;
@@ -150,10 +151,15 @@ class DeclarationVideNotifier extends StateNotifier<DeclarationVideState> {
       state = state.copyWith(succes: 'Hors ligne — déclaration en attente de synchronisation 📴');
     }
 
+    // EF-TRK-01 : une fois le camion déclaré disponible, le suivi de
+    // position démarre automatiquement (tant qu'une mission est active).
+    await _ref.read(trackingProvider.notifier).rafraichirEtDemarrer();
+
     return true;
   }
 
   // ── Modifier une déclaration déjà synchronisée ─────────────
+  // (le back-end refuse si elle a déjà un match — MODIFICATION_IMPOSSIBLE_STATUT_*)
   Future<bool> modifier({
     required String idLocal,
     required String? missionId,
@@ -205,6 +211,11 @@ class DeclarationVideNotifier extends StateNotifier<DeclarationVideState> {
     await DeclarationLocalDb.supprimer(idLocal);
     state = state.copyWith(succes: 'Déclaration supprimée 🗑️');
     await _chargerLocal();
+
+    // Plus de déclaration active pour ce camion → on arrête le suivi
+    // (ou on bascule sur une éventuelle autre mission encore active).
+    await _ref.read(trackingProvider.notifier).rafraichirEtDemarrer();
+
     return true;
   }
 

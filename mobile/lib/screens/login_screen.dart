@@ -39,6 +39,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     ref.listen(authProvider, (previous, next) {
       if (next.estConnecte && next.utilisateur != null) {
+        if (next.utilisateur!.pinTemporaire) {
+          Navigator.pushReplacementNamed(context, '/changer-pin');
+          return;
+        }
         final role = next.utilisateur!.role;
         if (role == 'CHAUFFEUR') {
           Navigator.pushReplacementNamed(context, '/dashboard-chauffeur');

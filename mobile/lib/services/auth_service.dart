@@ -37,6 +37,22 @@ class AuthService {
     return UtilisateurModel.fromJsonString(userJson);
   }
 
+  // ── CHANGER LE PIN (forcé si pinTemporaire, ou volontaire) 
+  Future<void> changerPin(String ancienPin, String nouveauPin) async {
+    await _dio.put('/auth/changer-pin', data: {
+      'ancienPin': ancienPin,
+      'nouveauPin': nouveauPin,
+    });
+
+    // Mettre à jour la session locale : le PIN n'est plus temporaire
+    final userJson = await _storage.read(key: _keyUtilisateur);
+    if (userJson != null) {
+      final utilisateur = UtilisateurModel.fromJsonString(userJson)
+          .copyWith(pinTemporaire: false);
+      await _storage.write(key: _keyUtilisateur, value: utilisateur.toJsonString());
+    }
+  }
+
   // ── LOGOUT 
   Future<void> logout() async {
     try {
