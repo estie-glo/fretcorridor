@@ -28,3 +28,4 @@ web/.angular/
 # Archives locales de référence (snapshot Sprint 1–3, dépôt embarqué)
 # Source de vérité : mobile/ + backend/ — voir docs/analyse-integration-mobile.md
 annexes/
+mobile_projet.zip
